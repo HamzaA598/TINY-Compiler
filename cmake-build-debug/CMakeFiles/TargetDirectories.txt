@@ -1,0 +1,3 @@
+D:/Materials/#4 Senior/Compilers/TINY-Compiler/cmake-build-debug/CMakeFiles/TINY_Compiler.dir
+D:/Materials/#4 Senior/Compilers/TINY-Compiler/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/Materials/#4 Senior/Compilers/TINY-Compiler/cmake-build-debug/CMakeFiles/rebuild_cache.dir

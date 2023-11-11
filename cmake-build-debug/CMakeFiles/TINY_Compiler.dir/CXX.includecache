@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/Materials/#4 Senior/Compilers/TINY-Compiler/scanner.cpp
+cstdio
+-
+cstdlib
+-
+cstring
+-
+

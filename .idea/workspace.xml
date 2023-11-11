@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="TINY_Compiler" targetName="TINY_Compiler" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5a57d609-73b7-46f1-ac28-24f14ba34c2a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/TINY-Compiler.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CMakeRCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdC/a.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.17.3/CompilerIdCXX/a.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/CXX.includecache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/DependInfo.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/build.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/cmake_clean.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/depend.internal" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/flags.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/link.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/linklibs.rsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/objects.a" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/objects1.rsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/progress.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TINY_Compiler.dir/scanner.cpp.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-environment.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/TINY_Compiler.cbp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/TINY_Compiler.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/debug.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/input.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmake-build-debug/output.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scanner.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2Y2VQ8tU3EMbILsLPUiGZKU4pM2" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+  </component>
+  <component name="RunManager">
+    <configuration name="TINY_Compiler" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TINY_Compiler" TARGET_NAME="TINY_Compiler" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TINY_Compiler" RUN_TARGET_NAME="TINY_Compiler">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5a57d609-73b7-46f1-ac28-24f14ba34c2a" name="Default Changelist" comment="" />
+      <created>1699723643309</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1699723643309</updated>
+      <workItem from="1699723645890" duration="1782000" />
+      <workItem from="1699725463012" duration="45000" />
+      <workItem from="1699725510323" duration="4910000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="444" y="186" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1699723654383">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="444" y="186" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.768@0.0.1366.768" timestamp="1699723654383" />
+    <state x="463" y="126" key="FileChooserDialogImpl" timestamp="1699725502998">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="463" y="126" key="FileChooserDialogImpl/0.0.1366.768@0.0.1366.768" timestamp="1699725502998" />
+    <state width="637" height="192" key="GridCell.Tab.0.bottom" timestamp="1699730747342">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="637" height="192" key="GridCell.Tab.0.bottom/0.0.1366.768@0.0.1366.768" timestamp="1699730747342" />
+    <state width="637" height="192" key="GridCell.Tab.0.center" timestamp="1699730747342">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="637" height="192" key="GridCell.Tab.0.center/0.0.1366.768@0.0.1366.768" timestamp="1699730747342" />
+    <state width="637" height="192" key="GridCell.Tab.0.left" timestamp="1699730747342">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="637" height="192" key="GridCell.Tab.0.left/0.0.1366.768@0.0.1366.768" timestamp="1699730747342" />
+    <state width="637" height="192" key="GridCell.Tab.0.right" timestamp="1699730747342">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="637" height="192" key="GridCell.Tab.0.right/0.0.1366.768@0.0.1366.768" timestamp="1699730747342" />
+    <state width="780" height="238" key="GridCell.Tab.1.bottom" timestamp="1699727976373">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="780" height="238" key="GridCell.Tab.1.bottom/0.0.1366.768@0.0.1366.768" timestamp="1699727976373" />
+    <state width="780" height="238" key="GridCell.Tab.1.center" timestamp="1699727976373">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="780" height="238" key="GridCell.Tab.1.center/0.0.1366.768@0.0.1366.768" timestamp="1699727976373" />
+    <state width="780" height="238" key="GridCell.Tab.1.left" timestamp="1699727976373">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="780" height="238" key="GridCell.Tab.1.left/0.0.1366.768@0.0.1366.768" timestamp="1699727976373" />
+    <state width="780" height="238" key="GridCell.Tab.1.right" timestamp="1699727976373">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="780" height="238" key="GridCell.Tab.1.right/0.0.1366.768@0.0.1366.768" timestamp="1699727976373" />
+    <state width="640" height="189" key="ImportCMakeProjectWizard.bottomPanel" timestamp="1699725505337">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="640" height="189" key="ImportCMakeProjectWizard.bottomPanel/0.0.1366.768@0.0.1366.768" timestamp="1699725505337" />
+    <state width="640" height="442" key="ImportCMakeProjectWizard.topPanel" timestamp="1699725505337">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state width="640" height="442" key="ImportCMakeProjectWizard.topPanel/0.0.1366.768@0.0.1366.768" timestamp="1699725505337" />
+    <state x="184" y="29" key="SettingsEditor" timestamp="1699723762367">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="184" y="29" key="SettingsEditor/0.0.1366.768@0.0.1366.768" timestamp="1699723762367" />
+    <state x="500" y="298" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1699732248526">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="500" y="298" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.768@0.0.1366.768" timestamp="1699732248526" />
+    <state x="680" y="176" key="run.anything.popup" timestamp="1699731135694">
+      <screen x="0" y="0" width="1366" height="768" />
+    </state>
+    <state x="680" y="176" key="run.anything.popup/0.0.1366.768@0.0.1366.768" timestamp="1699731135694" />
+  </component>
+</project>
