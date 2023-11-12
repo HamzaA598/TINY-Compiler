@@ -162,11 +162,8 @@ inline bool IsLetterOrUnderscore(char ch) { return (IsLetter(ch) || ch == '_'); 
 enum State {
     START,
     INNUM,
-    // choose a better name
     INID,
     INASSIGN,
-    INLESSTHAN,
-
     INCOMMENT,
     DONE
 };
@@ -207,22 +204,30 @@ struct InFile {
         State state = START;
         // DFA to return the next token
         while (state != DONE) {
-            char c;
+            char c = GetNextChar();
 
-            // skip spaces
-            do {
-                c = GetNextChar();
-            } while (c == ' ' || c == '\n' ||
-                     c == '\t' || c == '\r');
+            if(c == '\n') {
+                currentLineNum++;
+                currentLexemeLen = 0;
+                currentIdx = 0;
+                continue;
+            }
 
-            if (c == EOF)
+            if (c == EOF) {
+                currentTokenType = ENDFILE;
                 break;
+            }
 
             currentLexeme[currentIdx] = c;
             currentLexemeLen++;
             currentIdx++;
 
             if (state == START) {
+                // skip spaces
+                while (c == ' ' || c == '\t' || c == '\r') {
+                    c = GetNextChar();
+                }
+
                 // handle: print { or leave it?
                 if (c == '{')
                     state = INCOMMENT;
@@ -278,37 +283,37 @@ struct InFile {
             } else if (state == INNUM) {
                 if (IsDigit(c))
                     continue;
+                // handle: what if the number is 123a
                 currentTokenType = NUM;
                 state = DONE;
             } else if (state == INID) {
                 if (IsLetterOrUnderscore(c))
                     continue;
+                // handle: what if ziad1
                 currentTokenType = ID;
                 state = DONE;
             } else if (state == INASSIGN) {
                 state = DONE;
                 currentTokenType = ASSIGN;
-                if (c != '=')
+                if (c != '=') {
                     currentTokenType = ERROR;
+                }
             }
-                // handle
-                // where will we check if it is an id or a keyword?
-                // inside the function ?
-                // or in main?
-                // which?
-                // we need to have a property for the type
-                // member variable
-//            else if () {
-//
-//            }
         }
+        // handle: are the following two lines always correct?
+        currentLexemeLen--;
+        currentIdx--;
+
+        for(const auto & reserved_word : reserved_words)
+        {
+            if(strncpy(currentLexeme, reserved_word.lexeme, currentLexemeLen) == 0)
+                return reserved_word;
+        }
+
+
 
         Token token(currentTokenType, currentLexeme);
         return token;
-    }
-
-    void Advance(int num) {
-        currentIdx += num;
     }
 };
 
@@ -349,6 +354,12 @@ struct CompilerInfo {
     // should have a token table
     void scan() {
 
+        while (true) {
+            Token token = in_file.GetNextToken();
+            if (token.type == ENDFILE)
+                break;
+            out_file.Out(token.lexeme);
+        }
     }
 };
 
@@ -357,16 +368,7 @@ int main() {
 
     CompilerInfo ci("input.txt", "output.txt", "debug.txt");
 
-    InFile *in = &ci.in_file;
-    OutFile *out = &ci.out_file;
-
-//    while (true) {
-//        char *token = in->GetNextTokenStr();
-//        in->Advance(in->cur_line_size);
-//        if (token == 0)
-//            break;
-//        out->Out(token);
-//    }
+    ci.scan();
 
     return 0;
 }
