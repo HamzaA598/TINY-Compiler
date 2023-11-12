@@ -32,7 +32,6 @@
     <list default="true" id="5a57d609-73b7-46f1-ac28-24f14ba34c2a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/TINY_Compiler.exe" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/TINY_Compiler.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/output.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scanner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/scanner.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,11 +64,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -86,7 +80,8 @@
       <workItem from="1699791092018" duration="2061000" />
       <workItem from="1699797997079" duration="3449000" />
       <workItem from="1699801484752" duration="52000" />
-      <workItem from="1699803499996" duration="2709000" />
+      <workItem from="1699803499996" duration="2858000" />
+      <workItem from="1699808991161" duration="3913000" />
     </task>
     <servers />
   </component>
@@ -114,38 +109,38 @@
       <screen x="0" y="0" width="1366" height="768" />
     </state>
     <state x="463" y="126" key="FileChooserDialogImpl/0.0.1366.768@0.0.1366.768" timestamp="1699725502998" />
-    <state width="1323" height="238" key="GridCell.Tab.0.bottom" timestamp="1699806144112">
+    <state width="1323" height="262" key="GridCell.Tab.0.bottom" timestamp="1699812457106">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.0.bottom/0.0.1366.768@0.0.1366.768" timestamp="1699806144112" />
-    <state width="1323" height="238" key="GridCell.Tab.0.center" timestamp="1699806144111">
+    <state width="1323" height="262" key="GridCell.Tab.0.bottom/0.0.1366.768@0.0.1366.768" timestamp="1699812457106" />
+    <state width="1323" height="262" key="GridCell.Tab.0.center" timestamp="1699812457106">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.0.center/0.0.1366.768@0.0.1366.768" timestamp="1699806144111" />
-    <state width="1323" height="238" key="GridCell.Tab.0.left" timestamp="1699806144111">
+    <state width="1323" height="262" key="GridCell.Tab.0.center/0.0.1366.768@0.0.1366.768" timestamp="1699812457106" />
+    <state width="1323" height="262" key="GridCell.Tab.0.left" timestamp="1699812457106">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.0.left/0.0.1366.768@0.0.1366.768" timestamp="1699806144111" />
-    <state width="1323" height="238" key="GridCell.Tab.0.right" timestamp="1699806144111">
+    <state width="1323" height="262" key="GridCell.Tab.0.left/0.0.1366.768@0.0.1366.768" timestamp="1699812457106" />
+    <state width="1323" height="262" key="GridCell.Tab.0.right" timestamp="1699812457106">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.0.right/0.0.1366.768@0.0.1366.768" timestamp="1699806144111" />
-    <state width="1323" height="238" key="GridCell.Tab.1.bottom" timestamp="1699806143095">
+    <state width="1323" height="262" key="GridCell.Tab.0.right/0.0.1366.768@0.0.1366.768" timestamp="1699812457106" />
+    <state width="1323" height="262" key="GridCell.Tab.1.bottom" timestamp="1699812457106">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.1.bottom/0.0.1366.768@0.0.1366.768" timestamp="1699806143095" />
-    <state width="1323" height="238" key="GridCell.Tab.1.center" timestamp="1699806143095">
+    <state width="1323" height="262" key="GridCell.Tab.1.bottom/0.0.1366.768@0.0.1366.768" timestamp="1699812457106" />
+    <state width="1323" height="262" key="GridCell.Tab.1.center" timestamp="1699812457106">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.1.center/0.0.1366.768@0.0.1366.768" timestamp="1699806143095" />
-    <state width="1323" height="238" key="GridCell.Tab.1.left" timestamp="1699806143095">
+    <state width="1323" height="262" key="GridCell.Tab.1.center/0.0.1366.768@0.0.1366.768" timestamp="1699812457106" />
+    <state width="1323" height="262" key="GridCell.Tab.1.left" timestamp="1699812457105">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.1.left/0.0.1366.768@0.0.1366.768" timestamp="1699806143095" />
-    <state width="1323" height="238" key="GridCell.Tab.1.right" timestamp="1699806143095">
+    <state width="1323" height="262" key="GridCell.Tab.1.left/0.0.1366.768@0.0.1366.768" timestamp="1699812457105" />
+    <state width="1323" height="262" key="GridCell.Tab.1.right" timestamp="1699812457106">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
-    <state width="1323" height="238" key="GridCell.Tab.1.right/0.0.1366.768@0.0.1366.768" timestamp="1699806143095" />
+    <state width="1323" height="262" key="GridCell.Tab.1.right/0.0.1366.768@0.0.1366.768" timestamp="1699812457106" />
     <state width="640" height="189" key="ImportCMakeProjectWizard.bottomPanel" timestamp="1699725505337">
       <screen x="0" y="0" width="1366" height="768" />
     </state>
@@ -175,11 +170,21 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <condition expression="c == ' ' &amp;&amp; prev == 'd'" language="ObjectiveC" />
           <url>file://$PROJECT_DIR$/scanner.cpp</url>
-          <line>308</line>
-          <option name="timeStamp" value="13" />
+          <line>219</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="CMakeRunConfiguration">
+        <watch expression="c" />
+        <watch expression="this-&gt;currentLexeme" />
+        <watch expression="this-&gt;currentLineNum" />
+        <watch expression="this-&gt;currentIdx" />
+        <watch expression="this-&gt;currentLexemeLen" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

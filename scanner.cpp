@@ -193,23 +193,39 @@ struct InFile {
             fclose(file);
     }
 
-    char GetNextChar() {
+    char GetNextChar() const {
         int c = fgetc(file);
         return (char) c;
     }
 
+    void unGetChar() {
+        fseek(file, -1, SEEK_CUR);
+        currentLexemeLen--;
+        currentIdx--;
+    }
+
     Token GetNextToken() {
         TokenType currentTokenType;
+        currentLexemeLen = 0;
+        currentIdx = 0;
 
         State state = START;
         // DFA to return the next token
         while (state != DONE) {
-            char c = GetNextChar();
+            // skip spaces
+            char c;
+            do {
+                char prev = c;
+                c = GetNextChar();
+                if (prev != ' ' && c == ' ') {
+                    // read
+                    unGetChar();
+                    break;
+                }
+            } while (c == ' ' || c == '\t' || c == '\r');
 
-            if(c == '\n') {
+            if (c == '\n') {
                 currentLineNum++;
-                currentLexemeLen = 0;
-                currentIdx = 0;
                 continue;
             }
 
@@ -223,11 +239,6 @@ struct InFile {
             currentIdx++;
 
             if (state == START) {
-                // skip spaces
-                while (c == ' ' || c == '\t' || c == '\r') {
-                    c = GetNextChar();
-                }
-
                 // handle: print { or leave it?
                 if (c == '{')
                     state = INCOMMENT;
@@ -286,12 +297,14 @@ struct InFile {
                 // handle: what if the number is 123a
                 currentTokenType = NUM;
                 state = DONE;
+                unGetChar();
             } else if (state == INID) {
                 if (IsLetterOrUnderscore(c))
                     continue;
                 // handle: what if ziad1
                 currentTokenType = ID;
                 state = DONE;
+                unGetChar();
             } else if (state == INASSIGN) {
                 state = DONE;
                 currentTokenType = ASSIGN;
@@ -301,16 +314,13 @@ struct InFile {
             }
         }
         // handle: are the following two lines always correct?
-        currentLexemeLen--;
-        currentIdx--;
+//        currentLexemeLen--;
+//        currentIdx--;
 
-        for(const auto & reserved_word : reserved_words)
-        {
-            if(strncpy(currentLexeme, reserved_word.lexeme, currentLexemeLen) == 0)
+        for (const auto &reserved_word : reserved_words) {
+            if (strncmp(currentLexeme, reserved_word.lexeme, currentLexemeLen) == 0)
                 return reserved_word;
         }
-
-
 
         Token token(currentTokenType, currentLexeme);
         return token;
@@ -331,8 +341,11 @@ struct OutFile {
             fclose(file);
     }
 
-    void Out(const char *s) {
-        fprintf(file, "%s\n", s);
+    void Out(const char *s, int n) {
+        for (int i = 0; i < n; i++)
+            fprintf(file, "%c", s[i]);
+
+        fprintf(file, "\n");
         fflush(file);
     }
 };
@@ -358,7 +371,7 @@ struct CompilerInfo {
             Token token = in_file.GetNextToken();
             if (token.type == ENDFILE)
                 break;
-            out_file.Out(token.lexeme);
+            out_file.Out(token.lexeme, in_file.currentLexemeLen);
         }
     }
 };
