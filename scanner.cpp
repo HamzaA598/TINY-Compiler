@@ -65,7 +65,7 @@ void AllocateAndCopy(char **a, const char *b) {
 ////////////////////////////////////////////////////////////////////////////////////
 // Scanner /////////////////////////////////////////////////////////////////////////
 
-#define MAX_TOKEN_LEN 40
+#define MAX_LEXEME_LEN 40
 
 enum TokenType {
     IF,
@@ -109,7 +109,7 @@ const char *TokenTypeStr[] =
 
 struct Token {
     TokenType type;
-    char lexeme[MAX_TOKEN_LEN + 1];
+    char lexeme[MAX_LEXEME_LEN + 1];
 
     Token() {
         lexeme[0] = 0;
@@ -162,8 +162,11 @@ inline bool IsLetterOrUnderscore(char ch) { return (IsLetter(ch) || ch == '_'); 
 enum State {
     START,
     INNUM,
+    // choose a better name
     INID,
     INASSIGN,
+    INLESSTHAN,
+
     INCOMMENT,
     DONE
 };
@@ -176,16 +179,16 @@ enum State {
 
 struct InFile {
     FILE *file;
-    int cur_line_num;
-    char cur_token[MAX_TOKEN_LEN];
-    int cur_ind, cur_token_len;
+    int currentLineNum;
+    char currentLexeme[MAX_LEXEME_LEN];
+    int currentIdx, currentLexemeLen;
 
     InFile(const char *str) {
         file = 0;
         if (str)
             file = fopen(str, "r");
-        cur_ind = 0;
-        cur_line_num = 0;
+        currentIdx = 0;
+        currentLineNum = 0;
     }
 
     ~InFile() {
@@ -198,7 +201,9 @@ struct InFile {
         return (char) c;
     }
 
-    char *GetNextTokenStr() {
+    Token GetNextToken() {
+        TokenType currentTokenType;
+
         State state = START;
         // DFA to return the next token
         while (state != DONE) {
@@ -213,11 +218,12 @@ struct InFile {
             if (c == EOF)
                 break;
 
-            cur_token[cur_ind] = c;
-            cur_token_len++;
-            cur_ind++;
+            currentLexeme[currentIdx] = c;
+            currentLexemeLen++;
+            currentIdx++;
 
             if (state == START) {
+                // handle: print { or leave it?
                 if (c == '{')
                     state = INCOMMENT;
                 else if (IsDigit(c))
@@ -226,33 +232,83 @@ struct InFile {
                     state = INID;
                 else if (c == ':')
                     state = INASSIGN;
+                else {
+                    switch (c) {
+                        case '=':
+                            currentTokenType = EQUAL;
+                            break;
+                        case '<':
+                            currentTokenType = LESS_THAN;
+                            break;
+                        case '+':
+                            currentTokenType = PLUS;
+                            break;
+                        case '-':
+                            currentTokenType = MINUS;
+                            break;
+                        case '*':
+                            currentTokenType = TIMES;
+                            break;
+                        case '/':
+                            currentTokenType = DIVIDE;
+                            break;
+                        case '^':
+                            currentTokenType = POWER;
+                            break;
+                        case ';':
+                            currentTokenType = SEMI_COLON;
+                            break;
+                        case '(':
+                            currentTokenType = LEFT_PAREN;
+                            break;
+                        case ')':
+                            currentTokenType = RIGHT_PAREN;
+                            break;
+                        default:
+                            currentTokenType = ERROR;
+                            break;
+                    }
+                }
             } else if (state == INCOMMENT) {
                 if (c != '}')
                     continue;
-                cur_token_len = 0;
-                cur_ind = 0;
+                currentLexemeLen = 0;
+                currentIdx = 0;
                 state = START;
             } else if (state == INNUM) {
                 if (IsDigit(c))
                     continue;
+                currentTokenType = NUM;
                 state = DONE;
             } else if (state == INID) {
-                if(IsLetterOrUnderscore(c))
+                if (IsLetterOrUnderscore(c))
                     continue;
+                currentTokenType = ID;
                 state = DONE;
+            } else if (state == INASSIGN) {
+                state = DONE;
+                currentTokenType = ASSIGN;
+                if (c != '=')
+                    currentTokenType = ERROR;
             }
-//            else if(INASSIGN)
-//            {
-//                if(c == '=')
+                // handle
+                // where will we check if it is an id or a keyword?
+                // inside the function ?
+                // or in main?
+                // which?
+                // we need to have a property for the type
+                // member variable
+//            else if () {
 //
 //            }
         }
 
-        return &cur_token[cur_ind];
+        Token token(currentTokenType, currentLexeme);
+        return token;
     }
 
     void Advance(int num) {
-        cur_ind += num;
+        currentIdx += num;
     }
 };
 
@@ -287,7 +343,15 @@ struct CompilerInfo {
     CompilerInfo(const char *in_str, const char *out_str, const char *debug_str)
             : in_file(in_str), out_file(out_str), debug_file(debug_str) {
     }
+
+    // detect the type of each token
+    // populate the output file with the desired format
+    // should have a token table
+    void scan() {
+
+    }
 };
+
 
 int main() {
 
