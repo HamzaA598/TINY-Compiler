@@ -232,18 +232,16 @@ struct InFile {
             if (c == '\n')
                 continue;
 
-            if (c == '?') {
-                return Token(ENDFILE, "endfile");
-            }
-
             if (c == EOF) {
-                currentTokenType = ENDFILE;
-                break;
+                if(state == START) {
+                    currentLexemeLen = 7;
+                    return {ENDFILE, "endfile"};
+                }
+                else
+                    break;
             }
 
-            // read a char
-            // fgetc
-            // line by line
+
             // leading space, skip it
             if (c == ' ' && state == START)
                 continue;
@@ -392,9 +390,11 @@ struct CompilerInfo {
 
         while (true) {
             Token token = in_file.GetNextToken();
-            if (token.type == ENDFILE)
-                break;
             out_file.Out(token.lexeme, in_file.currentLexemeLen);
+            if (token.type == ENDFILE) {
+                int c = 5;
+                break;
+            }
         }
     }
 };

@@ -30,3 +30,4 @@ x
 write
 fact
 end
+endfile
