@@ -65,7 +65,7 @@ void AllocateAndCopy(char **a, const char *b) {
 ////////////////////////////////////////////////////////////////////////////////////
 // Scanner /////////////////////////////////////////////////////////////////////////
 
-#define MAX_STR_LEN 40
+#define MAX_TOKEN_LENGTH 40
 
 enum TokenType {
     IF,
@@ -109,7 +109,7 @@ const char *TokenTypeStr[] =
 
 struct Token {
     TokenType type;
-    char lexeme[MAX_STR_LEN + 1];
+    char lexeme[MAX_TOKEN_LENGTH + 1];
 
     Token() {
         lexeme[0] = 0;
@@ -172,11 +172,11 @@ enum State {
 ////////////////////////////////////////////////////////////////////////////////////
 // Input and Output ////////////////////////////////////////////////////////////////
 
-#define MAX_TOKEN_LENGTH 10000
+#define MAX_LINE_LENGTH 10000
 
 struct InFile {
     FILE *file;
-    char currentLexeme[MAX_STR_LEN], lineBuffer[MAX_STR_LEN];
+    char currentLexeme[MAX_TOKEN_LENGTH], lineBuffer[MAX_LINE_LENGTH];
     int currentLexemeIdx, currentLexemeLen, lineBufferIdx, lineBufferSize, currentLineNum;
 
     InFile(const char *str) {
@@ -197,16 +197,13 @@ struct InFile {
         if (lineBufferIdx >= lineBufferSize) {
             lineBufferIdx = 0;
             lineBuffer[0] = 0;
-            fgets(lineBuffer, MAX_STR_LEN, file);
+            fgets(lineBuffer, MAX_LINE_LENGTH, file);
             lineBufferSize = strlen(lineBuffer);
 
             if (lineBufferSize == 0)
                 return EOF; // End of file
 
             currentLineNum++;
-
-            // handleL: will you use skip spaces?
-//            SkipSpaces();
         }
 
         return lineBuffer[lineBufferIdx++];
@@ -226,19 +223,16 @@ struct InFile {
         State state = START;
         // DFA to return the next token
         while (state != DONE) {
-            // skip spaces
             char c = GetNextChar();
 
             if (c == '\n')
                 continue;
 
             if (c == EOF) {
-                if(state == START) {
-                    currentLexemeLen = 7;
-                    return {ENDFILE, "endfile"};
-                }
-                else
+                if (state != START)
                     break;
+                currentLexemeLen = 7;
+                return {ENDFILE, "endfile"};
             }
 
 
@@ -249,7 +243,7 @@ struct InFile {
             // if important space, need to identify the token
 
             // if not an important space, save the char and increment the pointers
-            // equivalent: c!=' ' || state == START
+            // equivalent to: c!=' ' || state == START
             if (!(c == ' ' && state != START)) {
                 currentLexeme[currentLexemeIdx] = c;
                 currentLexemeLen++;
@@ -307,13 +301,14 @@ struct InFile {
             } else if (state == INCOMMENT) {
                 if (c != '}')
                     continue;
+
                 currentLexemeLen = 0;
                 currentLexemeIdx = 0;
                 state = START;
             } else if (state == INNUM) {
                 if (IsDigit(c))
                     continue;
-                // handle: what if the number is 123a
+                // handle: what if the number is 123a, error
                 currentTokenType = NUM;
                 state = DONE;
                 if (c != ' ')
@@ -321,7 +316,7 @@ struct InFile {
             } else if (state == INID) {
                 if (IsLetterOrUnderscore(c))
                     continue;
-                // handle: what if ziad1
+                // handle: what if ziad1, error
                 currentTokenType = ID;
                 state = DONE;
                 if (c != ' ')
@@ -334,9 +329,6 @@ struct InFile {
                 }
             }
         }
-        // handle: are the following two lines always correct?
-//        currentLexemeLen--;
-//        currentLexemeIdx--;
 
         for (const auto &reserved_word : reserved_words) {
             if (strncmp(currentLexeme, reserved_word.lexeme, currentLexemeLen) == 0)
@@ -362,9 +354,18 @@ struct OutFile {
             fclose(file);
     }
 
-    void Out(const char *s, int n) {
+    void Out(int lineNum, const char* lexeme, int n, const char *token, int m) {
+        // [lineNum] lexeme (token)
+
+        fprintf(file, "[%i] ", lineNum);
+
         for (int i = 0; i < n; i++)
-            fprintf(file, "%c", s[i]);
+            fprintf(file, "%c", lexeme[i]);
+
+        fprintf(file, " (");
+        for (int i = 0; i < m; i++)
+            fprintf(file, "%c", token[i]);
+        fprintf(file, ")");
 
         fprintf(file, "\n");
         fflush(file);
@@ -390,11 +391,12 @@ struct CompilerInfo {
 
         while (true) {
             Token token = in_file.GetNextToken();
-            out_file.Out(token.lexeme, in_file.currentLexemeLen);
-            if (token.type == ENDFILE) {
-                int c = 5;
+
+            out_file.Out(in_file.currentLineNum, token.lexeme, in_file.currentLexemeLen,
+                         TokenTypeStr[token.type], strlen(TokenTypeStr[token.type]));
+
+            if (token.type == ENDFILE)
                 break;
-            }
         }
     }
 };
@@ -403,7 +405,6 @@ struct CompilerInfo {
 int main() {
 
     CompilerInfo ci("input.txt", "output.txt", "debug.txt");
-
     ci.scan();
 
     return 0;
