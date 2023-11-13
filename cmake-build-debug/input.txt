@@ -11,4 +11,4 @@ if 0<x then {compute only if x>=1}
     x:=x-1
   until x=0;
   write fact {output factorial}
-end
+end ?

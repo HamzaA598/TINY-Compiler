@@ -195,6 +195,7 @@ struct InFile {
 
     char GetNextChar() const {
         int c = fgetc(file);
+
         return (char) c;
     }
 
@@ -213,20 +214,15 @@ struct InFile {
         // DFA to return the next token
         while (state != DONE) {
             // skip spaces
-            char c;
-            do {
-                char prev = c;
-                c = GetNextChar();
-                if (prev != ' ' && c == ' ') {
-                    // read
-                    unGetChar();
-                    break;
-                }
-            } while (c == ' ' || c == '\t' || c == '\r');
+            char c = GetNextChar();
 
             if (c == '\n') {
                 currentLineNum++;
                 continue;
+            }
+
+            if(c == '?'){
+                return Token(ENDFILE, "endfile");
             }
 
             if (c == EOF) {
@@ -234,9 +230,19 @@ struct InFile {
                 break;
             }
 
-            currentLexeme[currentIdx] = c;
-            currentLexemeLen++;
-            currentIdx++;
+            // leading space, skip it
+            if (c == ' ' && state == START)
+                continue;
+
+            // if important space, need to identify the token
+
+            // if not an important space, save the char and increment the pointers
+            // equivalent: c!=' ' || state == START
+            if (!(c == ' ' && state != START)) {
+                currentLexeme[currentIdx] = c;
+                currentLexemeLen++;
+                currentIdx++;
+            }
 
             if (state == START) {
                 // handle: print { or leave it?
@@ -249,6 +255,7 @@ struct InFile {
                 else if (c == ':')
                     state = INASSIGN;
                 else {
+                    state = DONE;
                     switch (c) {
                         case '=':
                             currentTokenType = EQUAL;
@@ -297,14 +304,16 @@ struct InFile {
                 // handle: what if the number is 123a
                 currentTokenType = NUM;
                 state = DONE;
-                unGetChar();
+                if (c != ' ')
+                    unGetChar();
             } else if (state == INID) {
                 if (IsLetterOrUnderscore(c))
                     continue;
                 // handle: what if ziad1
                 currentTokenType = ID;
                 state = DONE;
-                unGetChar();
+                if (c != ' ')
+                    unGetChar();
             } else if (state == INASSIGN) {
                 state = DONE;
                 currentTokenType = ASSIGN;
