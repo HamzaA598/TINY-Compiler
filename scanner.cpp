@@ -225,7 +225,8 @@ struct InFile {
         while (state != DONE) {
             char c = GetNextChar();
 
-            if (c == '\n')
+            // unimportant '\n'
+            if (c == '\n' && state == START)
                 continue;
 
             if (c == EOF) {
