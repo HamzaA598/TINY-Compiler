@@ -65,7 +65,7 @@ void AllocateAndCopy(char **a, const char *b) {
 ////////////////////////////////////////////////////////////////////////////////////
 // Scanner /////////////////////////////////////////////////////////////////////////
 
-#define MAX_LEXEME_LEN 40
+#define MAX_STR_LEN 40
 
 enum TokenType {
     IF,
@@ -109,7 +109,7 @@ const char *TokenTypeStr[] =
 
 struct Token {
     TokenType type;
-    char lexeme[MAX_LEXEME_LEN + 1];
+    char lexeme[MAX_STR_LEN + 1];
 
     Token() {
         lexeme[0] = 0;
@@ -176,16 +176,16 @@ enum State {
 
 struct InFile {
     FILE *file;
-    int currentLineNum;
-    char currentLexeme[MAX_LEXEME_LEN];
-    int currentIdx, currentLexemeLen;
+    char currentLexeme[MAX_STR_LEN], lineBuffer[MAX_STR_LEN];
+    int currentLexemeIdx, currentLexemeLen, lineBufferIdx, lineBufferSize, currentLineNum;
 
     InFile(const char *str) {
         file = 0;
         if (str)
             file = fopen(str, "r");
-        currentIdx = 0;
+        currentLexemeIdx = 0;
         currentLineNum = 0;
+        lineBufferIdx = 0;
     }
 
     ~InFile() {
@@ -193,22 +193,35 @@ struct InFile {
             fclose(file);
     }
 
-    char GetNextChar() const {
-        int c = fgetc(file);
+    char GetNextChar() {
+        if (lineBufferIdx >= lineBufferSize) {
+            lineBufferIdx = 0;
+            lineBuffer[0] = 0;
+            fgets(lineBuffer, MAX_STR_LEN, file);
+            lineBufferSize = strlen(lineBuffer);
 
-        return (char) c;
+            if (lineBufferSize == 0)
+                return EOF; // End of file
+
+            currentLineNum++;
+
+            // handleL: will you use skip spaces?
+//            SkipSpaces();
+        }
+
+        return lineBuffer[lineBufferIdx++];
     }
 
     void unGetChar() {
-        fseek(file, -1, SEEK_CUR);
+        lineBufferIdx--;
         currentLexemeLen--;
-        currentIdx--;
+        currentLexemeIdx--;
     }
 
     Token GetNextToken() {
         TokenType currentTokenType;
         currentLexemeLen = 0;
-        currentIdx = 0;
+        currentLexemeIdx = 0;
 
         State state = START;
         // DFA to return the next token
@@ -216,12 +229,10 @@ struct InFile {
             // skip spaces
             char c = GetNextChar();
 
-            if (c == '\n') {
-                currentLineNum++;
+            if (c == '\n')
                 continue;
-            }
 
-            if(c == '?'){
+            if (c == '?') {
                 return Token(ENDFILE, "endfile");
             }
 
@@ -230,6 +241,9 @@ struct InFile {
                 break;
             }
 
+            // read a char
+            // fgetc
+            // line by line
             // leading space, skip it
             if (c == ' ' && state == START)
                 continue;
@@ -239,9 +253,9 @@ struct InFile {
             // if not an important space, save the char and increment the pointers
             // equivalent: c!=' ' || state == START
             if (!(c == ' ' && state != START)) {
-                currentLexeme[currentIdx] = c;
+                currentLexeme[currentLexemeIdx] = c;
                 currentLexemeLen++;
-                currentIdx++;
+                currentLexemeIdx++;
             }
 
             if (state == START) {
@@ -296,7 +310,7 @@ struct InFile {
                 if (c != '}')
                     continue;
                 currentLexemeLen = 0;
-                currentIdx = 0;
+                currentLexemeIdx = 0;
                 state = START;
             } else if (state == INNUM) {
                 if (IsDigit(c))
@@ -324,7 +338,7 @@ struct InFile {
         }
         // handle: are the following two lines always correct?
 //        currentLexemeLen--;
-//        currentIdx--;
+//        currentLexemeIdx--;
 
         for (const auto &reserved_word : reserved_words) {
             if (strncmp(currentLexeme, reserved_word.lexeme, currentLexemeLen) == 0)
