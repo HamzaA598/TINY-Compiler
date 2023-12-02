@@ -391,23 +391,25 @@ static CompilerInfo ci("input.txt", "output.txt", "debug.txt");
 
 static void match(TokenType expect)
 {
-    if(currentToken.type != expect)
-        throw std::invalid_argument("token types does not match");
+    if(currentToken.type == expect)
+        GetNextToken(&ci, &currentToken); // advance the token if it is correct
+    else
+        throw ("ERROR! wrong token type");
 }
 
 
 static TreeNode *stmtseq();
 static TreeNode *stmt();
-static TreeNode* ifstmt();
+static TreeNode *ifstmt();
 static TreeNode *repeatstmt();
-static TreeNode* assignstmt();
+static TreeNode *assignstmt();
 static TreeNode *readstmt();
-static TreeNode* writestmt();
+static TreeNode *writestmt();
 static TreeNode *expr();
-static TreeNode* mathexpr();
+static TreeNode *mathexpr();
 static TreeNode *term();
-static TreeNode* factor();
-static TreeNode* newexpr();
+static TreeNode *factor();
+static TreeNode *newexpr();
 
 
 static TreeNode *stmt() {
@@ -486,7 +488,7 @@ static TreeNode* newexpr() {
 }
 
 // stmtseq -> stmt { ; stmt }
-TreeNode* stmtseq()
+TreeNode *stmtseq()
 {
     GetNextToken(&ci, &currentToken); // get first token
     TreeNode *currentNode = stmt();
@@ -503,7 +505,7 @@ TreeNode* stmtseq()
 }
 
 // ifstmt -> if expr then stmtseq [ else stmtseq ] end
-TreeNode* ifstmt()
+TreeNode *ifstmt()
 {
     TreeNode *currentNode;
     currentNode->node_kind = IF_NODE;
@@ -525,7 +527,7 @@ TreeNode* ifstmt()
 }
 
 // assignstmt -> identifier := expr
-TreeNode* assignstmt()
+TreeNode *assignstmt()
 {
     TreeNode *currentNode;
     currentNode->node_kind = ASSIGN_NODE;
@@ -541,7 +543,7 @@ TreeNode* assignstmt()
 }
 
 // writestmt -> write expr
-TreeNode* writestmt()
+TreeNode *writestmt()
 {
     TreeNode *currentNode;
     currentNode->node_kind = WRITE_NODE;
@@ -552,7 +554,7 @@ TreeNode* writestmt()
 }
 
 // mathexpr -> term { (+|-) term }    left associative
-TreeNode* mathexpr()
+TreeNode *mathexpr()
 {
     TreeNode *currentNode = term();
 
@@ -572,7 +574,7 @@ TreeNode* mathexpr()
 }
 
 // factor -> newexpr { ^ newexpr }    right associative
-TreeNode* factor()
+TreeNode *factor()
 {
     TreeNode *currentNode = newexpr();
 
