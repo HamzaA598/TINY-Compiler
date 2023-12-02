@@ -387,7 +387,11 @@ void PrintTree(TreeNode *node, int sh = 0) {
  */
 
 static Token currentToken;
+<<<<<<< Updated upstream
 static CompilerInfo ci("input.txt", "output.txt", "debug.txt");
+=======
+
+>>>>>>> Stashed changes
 
 static void match(TokenType expect)
 {
@@ -398,20 +402,21 @@ static void match(TokenType expect)
 
 static TreeNode *stmtseq();
 static TreeNode *stmt();
-static TreeNode *ifstmt();
-static TreeNode *assignstmt();
-static TreeNode *writestmt();
+static TreeNode* ifstmt();
+static TreeNode *repeatstmt();
+static TreeNode* assignstmt();
+static TreeNode *read();
+static TreeNode* writestmt();
 static TreeNode *expr();
-static TreeNode *repeat_stmt();
-static TreeNode *mathexpr();
+static TreeNode* mathexpr();
 static TreeNode *term();
-static TreeNode *factor();
-static TreeNode *newexpr();
+static TreeNode* factor();
+static TreeNode* newexpr();
 
 
 static TreeNode *stmt() {
     TreeNode *currentNode = nullptr;
-    switch (currentTokenType) {
+    switch (currentToken.type) {
         case IF:
             currentNode = ifstmt();
             break;
@@ -431,26 +436,21 @@ static TreeNode *stmt() {
     return currentNode;
 }
 
-static TreeNode *repeat_stmt() {
-//    TreeNode* currentNode = nullptr;
-//    match(REPEAT);
-//    currentNode->node_kind = REPEAT_NODE;
-    // or
-    TreeNode *currentNode = match(REPEAT);
+static TreeNode *repeatstmt() {
+    TreeNode* currentNode = nullptr;
+    match(REPEAT);
+    currentNode->node_kind = REPEAT_NODE;
 
     currentNode->child[0] = stmtseq();
 
-    // handle
-//    match(UNTIL);
-//    currentNode->child[1] = ;
-    // or
-    currentNode->child[1] = match(UNTIL);
+    match(UNTIL);
+    currentNode->child[1] = ;
 
     currentNode->child[2] = expr();
     return currentNode;
 }
 
-static TreeNode *read_stmt() {
+static TreeNode *readstmt() {
 //    TreeNode* currentNode = nullptr;
 //    match(READ);
 //    currentNode->node_kind = READ_NODE;
@@ -462,6 +462,17 @@ static TreeNode *read_stmt() {
     return currentNode;
 }
 
+static TreeNode* expr() {
+
+}
+
+static TreeNode* term() {
+
+}
+
+static TreeNode* newexpr() {
+
+}
 
 // stmtseq -> stmt { ; stmt }
 TreeNode* stmtseq()
