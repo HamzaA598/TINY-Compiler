@@ -1,8 +1,5 @@
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
-
-using namespace std;
 
 /*{ Sample program
   in TINY language
@@ -355,7 +352,7 @@ struct OutFile {
             fclose(file);
     }
 
-    void Out(int lineNum, const char* lexeme, int n, const char *token, int m) {
+    void Out(int lineNum, const char *lexeme, int n, const char *token, int m) {
         // [lineNum] lexeme (token)
 
         fprintf(file, "[%i] ", lineNum);
