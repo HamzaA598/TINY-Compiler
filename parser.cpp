@@ -531,9 +531,11 @@ TreeNode* assignstmt()
     currentNode->node_kind = ASSIGN_NODE;
 
     match(ID);
-    currentNode->id = currentToken.str;
+    TreeNode *child;
+    child->id = currentToken.str;
+    currentNode->child[0] = child;
     match(ASSIGN);
-    currentNode->child[0] = expr();
+    currentNode->child[1] = expr();
 
     return currentNode;
 }
@@ -559,12 +561,12 @@ TreeNode* mathexpr()
         TreeNode *parent;
         parent->node_kind = OPER_NODE;
         
-        parent->child[0] = currentNode;
+        parent->child[1] = currentNode;
         parent->oper = currentToken.type;
         currentNode = parent;
 
         match(currentToken.type);
-        currentNode->child[1] = term();
+        currentNode->child[0] = term();
     }
     return currentNode;
 }
