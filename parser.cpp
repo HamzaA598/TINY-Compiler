@@ -387,11 +387,7 @@ void PrintTree(TreeNode *node, int sh = 0) {
  */
 
 static Token currentToken;
-<<<<<<< Updated upstream
 static CompilerInfo ci("input.txt", "output.txt", "debug.txt");
-=======
-
->>>>>>> Stashed changes
 
 static void match(TokenType expect)
 {
