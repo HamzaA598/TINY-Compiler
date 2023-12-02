@@ -386,24 +386,27 @@ void PrintTree(TreeNode *node, int sh = 0) {
  * need match to return a node. how should i match until?
  */
 
-static TokenType currentTokenType;
-
+static Token currentToken;
+static CompilerInfo ci("input.txt", "output.txt", "debug.txt");
 
 static void match(TokenType expect)
 {
-    if(token.type != expect)
+    if(currentToken.type != expect)
         throw std::invalid_argument("token types does not match");
 }
 
 
-static TreeNode* stmtseq();
+static TreeNode *stmtseq();
 static TreeNode *stmt();
-static TreeNode* ifstmt();
-static TreeNode* assignstmt();
-static TreeNode* writestmt();
+static TreeNode *ifstmt();
+static TreeNode *assignstmt();
+static TreeNode *writestmt();
+static TreeNode *expr();
 static TreeNode *repeat_stmt();
-static TreeNode* mathexpr();
-static TreeNode* factor();
+static TreeNode *mathexpr();
+static TreeNode *term();
+static TreeNode *factor();
+static TreeNode *newexpr();
 
 
 static TreeNode *stmt() {
@@ -463,11 +466,11 @@ static TreeNode *read_stmt() {
 // stmtseq -> stmt { ; stmt }
 TreeNode* stmtseq()
 {
-    GetNextToken(&ci, &token); // get first token
+    GetNextToken(&ci, &currentToken); // get first token
     TreeNode *currentNode = stmt();
 
-    while(token.type != ENDFILE && token.type != END &&
-            token.type != ELSE && token.type != UNTIL)
+    while(currentToken.type != ENDFILE && currentToken.type != END &&
+            currentToken.type != ELSE && currentToken.type != UNTIL)
         {
             match(SEMI_COLON);
             TreeNode *sibling = stmt();
@@ -488,7 +491,7 @@ TreeNode* ifstmt()
     match(THEN);
     currentNode->child[1] = stmtseq();
 
-    if(token.type == ELSE)
+    if(currentToken.type == ELSE)
     {
         match(ELSE);
         currentNode->child[2] = stmtseq();
@@ -506,7 +509,7 @@ TreeNode* assignstmt()
     currentNode->node_kind = ASSIGN_NODE;
 
     match(ID);
-    currentNode->id = token.str;
+    currentNode->id = currentToken.str;
     match(ASSIGN);
     currentNode->child[0] = expr();
 
@@ -529,16 +532,16 @@ TreeNode* mathexpr()
 {
     TreeNode *currentNode = term();
 
-    while(token.type == PLUS || token.type == MINUS)
+    while(currentToken.type == PLUS || currentToken.type == MINUS)
     {
         TreeNode *parent;
         parent->node_kind = OPER_NODE;
         
         parent->child[0] = currentNode;
-        parent->oper = token.type;
+        parent->oper = currentToken.type;
         currentNode = parent;
 
-        match(token.type);
+        match(currentToken.type);
         currentNode->child[1] = term();
     }
     return currentNode;
@@ -549,15 +552,15 @@ TreeNode* factor()
 {
     TreeNode *currentNode = newexpr();
 
-    while(token.type == POWER)
+    while(currentToken.type == POWER)
     {
         TreeNode *parent;
         parent->node_kind = OPER_NODE;
         
         parent->child[0] = currentNode;
-        parent->oper = token.type;
+        parent->oper = currentToken.type;
         currentNode = parent;
-        match(token.type);
+        match(currentToken.type);
         currentNode->child[1] = newexpr();
     }
     return currentNode;
