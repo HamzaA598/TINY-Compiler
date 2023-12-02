@@ -388,8 +388,23 @@ void PrintTree(TreeNode *node, int sh = 0) {
 
 static TokenType currentTokenType;
 
+
+static void match(TokenType expect)
+{
+    if(token.type != expect)
+        throw std::invalid_argument("token types does not match");
+}
+
+
+static TreeNode* stmtseq();
 static TreeNode *stmt();
+static TreeNode* ifstmt();
+static TreeNode* assignstmt();
+static TreeNode* writestmt();
 static TreeNode *repeat_stmt();
+static TreeNode* mathexpr();
+static TreeNode* factor();
+
 
 static TreeNode *stmt() {
     TreeNode *currentNode = nullptr;
@@ -443,3 +458,108 @@ static TreeNode *read_stmt() {
 
     return currentNode;
 }
+
+
+// stmtseq -> stmt { ; stmt }
+TreeNode* stmtseq()
+{
+    GetNextToken(&ci, &token); // get first token
+    TreeNode *currentNode = stmt();
+
+    while(token.type != ENDFILE && token.type != END &&
+            token.type != ELSE && token.type != UNTIL)
+        {
+            match(SEMI_COLON);
+            TreeNode *sibling = stmt();
+            if(sibling != NULL)
+                currentNode->sibling = sibling;
+        }
+    return currentNode;
+}
+
+// ifstmt -> if expr then stmtseq [ else stmtseq ] end
+TreeNode* ifstmt()
+{
+    TreeNode *currentNode;
+    currentNode->node_kind = IF_NODE;
+
+    match(IF);
+    currentNode->child[0] = expr();
+    match(THEN);
+    currentNode->child[1] = stmtseq();
+
+    if(token.type == ELSE)
+    {
+        match(ELSE);
+        currentNode->child[2] = stmtseq();
+    }
+    
+    match(END);
+
+    return currentNode;
+}
+
+// assignstmt -> identifier := expr
+TreeNode* assignstmt()
+{
+    TreeNode *currentNode;
+    currentNode->node_kind = ASSIGN_NODE;
+
+    match(ID);
+    currentNode->id = token.str;
+    match(ASSIGN);
+    currentNode->child[0] = expr();
+
+    return currentNode;
+}
+
+// writestmt -> write expr
+TreeNode* writestmt()
+{
+    TreeNode *currentNode;
+    currentNode->node_kind = WRITE_NODE;
+
+    match(WRITE);
+    currentNode->child[0] = expr();
+    return currentNode;
+}
+
+// mathexpr -> term { (+|-) term }    left associative
+TreeNode* mathexpr()
+{
+    TreeNode *currentNode = term();
+
+    while(token.type == PLUS || token.type == MINUS)
+    {
+        TreeNode *parent;
+        parent->node_kind = OPER_NODE;
+        
+        parent->child[0] = currentNode;
+        parent->oper = token.type;
+        currentNode = parent;
+
+        match(token.type);
+        currentNode->child[1] = term();
+    }
+    return currentNode;
+}
+
+// factor -> newexpr { ^ newexpr }    right associative
+TreeNode* factor()
+{
+    TreeNode *currentNode = newexpr();
+
+    while(token.type == POWER)
+    {
+        TreeNode *parent;
+        parent->node_kind = OPER_NODE;
+        
+        parent->child[0] = currentNode;
+        parent->oper = token.type;
+        currentNode = parent;
+        match(token.type);
+        currentNode->child[1] = newexpr();
+    }
+    return currentNode;
+}
+
