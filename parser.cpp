@@ -401,7 +401,7 @@ static TreeNode *stmt();
 static TreeNode* ifstmt();
 static TreeNode *repeatstmt();
 static TreeNode* assignstmt();
-static TreeNode *read();
+static TreeNode *readstmt();
 static TreeNode* writestmt();
 static TreeNode *expr();
 static TreeNode* mathexpr();
@@ -411,7 +411,7 @@ static TreeNode* newexpr();
 
 
 static TreeNode *stmt() {
-    TreeNode *currentNode = nullptr;
+    TreeNode *currentNode;
     switch (currentToken.type) {
         case IF:
             currentNode = ifstmt();
@@ -433,33 +433,48 @@ static TreeNode *stmt() {
 }
 
 static TreeNode *repeatstmt() {
-    TreeNode* currentNode = nullptr;
+    TreeNode* currentNode;
     match(REPEAT);
+
     currentNode->node_kind = REPEAT_NODE;
 
     currentNode->child[0] = stmtseq();
 
-    match(UNTIL);
-    currentNode->child[1] = ;
+    currentNode->child[1] = expr();
 
-    currentNode->child[2] = expr();
     return currentNode;
 }
 
 static TreeNode *readstmt() {
-//    TreeNode* currentNode = nullptr;
-//    match(READ);
-//    currentNode->node_kind = READ_NODE;
-    // or
-    TreeNode *currentNode = match(READ);
+    TreeNode* currentNode;
+    match(READ);
+    currentNode->node_kind = READ_NODE;
 
-    currentNode->child[0] = match(ID);
+    match(ID);
+
+    // handle: create an identifier
+    currentNode->child[0] = new TreeNode();
 
     return currentNode;
 }
 
 static TreeNode* expr() {
+    TreeNode* currentNode = mathexpr();
 
+    if(currentToken.type == LESS_THAN || currentToken.type == EQUAL)
+    {
+        TreeNode* parent;
+        parent->node_kind = OPER_NODE;
+        parent->oper = currentNode->oper;
+
+        TreeNode* secondChild = mathexpr();
+
+        parent->child[0] = currentNode;
+        parent->child[1] = secondChild;
+
+        currentNode = parent;
+    }
+    return currentNode;
 }
 
 static TreeNode* term() {
