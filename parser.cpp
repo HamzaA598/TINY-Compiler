@@ -526,10 +526,12 @@ static TreeNode *newexpr() {
 
     if (currentToken.type == LEFT_PAREN) {
         // handle: should leftparan and rightparan have a node kind?
+        match(LEFT_PAREN);
         currentNode->child[0] = mathexpr();
     } else if (currentToken.type == NUM) {
         currentNode->node_kind = NUM_NODE;
         // handle: store the number inside the node
+        match(NUM);
         int value = 0, i = 0;
         while(currentToken.str[i] >= '0' && currentToken.str[i] <= '9')
         {
@@ -538,11 +540,10 @@ static TreeNode *newexpr() {
         }
          currentNode->num = value;
     } else if (currentToken.type == ID) {
+        match(ID);
         currentNode->node_kind = ID_NODE;
         currentNode->id = currentToken.str;
     }
-    else
-        ; // handle: throw an error
 
     return currentNode;
 }
@@ -552,12 +553,12 @@ TreeNode *stmtseq() {
     GetNextToken(&ci, &currentToken); // get first token
     TreeNode *currentNode = stmt();
 
-    while (currentToken.type != ENDFILE && currentToken.type != END &&
-           currentToken.type != ELSE && currentToken.type != UNTIL) {
+    // currentToken.type != ELSE && currentToken.type != UNTIL
+    while (currentToken.type != ENDFILE && currentToken.type != END) {
         match(SEMI_COLON);
         TreeNode *sibling = stmt();
-        if (sibling != NULL)
-            currentNode->sibling = sibling;
+        currentNode->sibling = sibling;
+        currentNode = currentNode->sibling;
     }
     return currentNode;
 }
@@ -590,6 +591,7 @@ TreeNode *assignstmt() {
     match(ID);
     TreeNode *child;
     child->id = currentToken.str;
+    child->node_kind = ID_NODE;
     currentNode->child[0] = child;
     match(ASSIGN);
     currentNode->child[1] = expr();
@@ -617,10 +619,11 @@ TreeNode *mathexpr() {
 
         parent->child[0] = currentNode;
         parent->oper = currentToken.type;
-        currentNode = parent;
 
         match(currentToken.type);
-        currentNode->child[1] = term();
+        parent->child[1] = term();
+
+        currentNode = parent;
     }
     return currentNode;
 }
@@ -635,10 +638,19 @@ TreeNode *factor() {
 
         parent->child[1] = currentNode;
         parent->oper = currentToken.type;
-        currentNode = parent;
+
         match(POWER);
-        currentNode->child[0] = newexpr();
+        parent->child[0] = newexpr();
+
+        currentNode = parent;
     }
     return currentNode;
 }
 
+int main()
+{
+    TreeNode *root = stmtseq();
+    PrintTree(root);
+
+    return 0;
+}
