@@ -386,12 +386,12 @@ void PrintTree(TreeNode *node, int sh = 0) {
  */
 
 static Token currentToken;
-static CompilerInfo ci("input.txt", "output.txt", "debug.txt");
+static CompilerInfo *ci;
 
 static void match(TokenType expect) {
     if (currentToken.type == expect)
         // get the next token
-        GetNextToken(&ci, &currentToken); // advance the token if it is correct
+        GetNextToken(ci, &currentToken); // advance the token if it is correct
     else
         throw ("ERROR! wrong token type");
 }
@@ -422,8 +422,8 @@ static TreeNode *factor();
 static TreeNode *newexpr();
 
 // stmt -> ifstmt | repeatstmt | assignstmt | readstmt | writestmt
-static TreeNode *stmt() {
-    TreeNode *currentNode;
+TreeNode *stmt() {
+    TreeNode *currentNode = new TreeNode();
     switch (currentToken.type) {
         case IF:
             currentNode = ifstmt();
@@ -445,8 +445,8 @@ static TreeNode *stmt() {
 }
 
 // repeatstmt -> repeat stmtseq until expr
-static TreeNode *repeatstmt() {
-    TreeNode *currentNode;
+TreeNode *repeatstmt() {
+    TreeNode *currentNode = new TreeNode();
     match(REPEAT);
 
     currentNode->node_kind = REPEAT_NODE;
@@ -461,29 +461,29 @@ static TreeNode *repeatstmt() {
 }
 
 // readstmt -> read identifier
-static TreeNode *readstmt() {
-    TreeNode *currentNode;
+TreeNode *readstmt() {
+    TreeNode *currentNode = new TreeNode();
     match(READ);
     currentNode->node_kind = READ_NODE;
 
-    match(ID);
-
-    TreeNode* newNode;
+    TreeNode* newNode = new TreeNode();
     newNode->node_kind = ID_NODE;
     newNode->id = currentToken.str;
     newNode->expr_data_type = INTEGER;
 
     currentNode->child[0] = newNode;
 
+    match(ID);
+
     return currentNode;
 }
 
 // expr -> mathexpr [ (<|=) mathexpr ]
-static TreeNode *expr() {
+TreeNode *expr() {
     TreeNode *currentNode = mathexpr();
 
     if (currentToken.type == LESS_THAN || currentToken.type == EQUAL) {
-        TreeNode *parent;
+        TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
         parent->oper = currentToken.type;
 
@@ -501,11 +501,11 @@ static TreeNode *expr() {
 
 // term -> factor { (*|/) factor } left associative
 
-static TreeNode *term() {
+TreeNode *term() {
     TreeNode *currentNode = factor();
 
     while (currentToken.type == TIMES || currentToken.type == DIVIDE) {
-        TreeNode *parent;
+        TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
         parent->oper = currentToken.type;
 
@@ -521,8 +521,8 @@ static TreeNode *term() {
 }
 
 // newexpr -> ( mathexpr ) | number | identifier
-static TreeNode *newexpr() {
-    TreeNode *currentNode;
+TreeNode *newexpr() {
+    TreeNode *currentNode = new TreeNode();
 
     if (currentToken.type == LEFT_PAREN) {
         // handle: should leftparan and rightparan have a node kind?
@@ -550,7 +550,7 @@ static TreeNode *newexpr() {
 
 // stmtseq -> stmt { ; stmt }
 TreeNode *stmtseq() {
-    GetNextToken(&ci, &currentToken); // get first token
+    GetNextToken(ci, &currentToken); // get first token
     TreeNode *currentNode = stmt();
 
     // currentToken.type != ELSE && currentToken.type != UNTIL
@@ -565,7 +565,7 @@ TreeNode *stmtseq() {
 
 // ifstmt -> if expr then stmtseq [ else stmtseq ] end
 TreeNode *ifstmt() {
-    TreeNode *currentNode;
+    TreeNode *currentNode = new TreeNode();
     currentNode->node_kind = IF_NODE;
 
     match(IF);
@@ -585,7 +585,7 @@ TreeNode *ifstmt() {
 
 // assignstmt -> identifier := expr
 TreeNode *assignstmt() {
-    TreeNode *currentNode;
+    TreeNode *currentNode = new TreeNode();
     currentNode->node_kind = ASSIGN_NODE;
 
     match(ID);
@@ -601,7 +601,7 @@ TreeNode *assignstmt() {
 
 // writestmt -> write expr
 TreeNode *writestmt() {
-    TreeNode *currentNode;
+    TreeNode *currentNode = new TreeNode();
     currentNode->node_kind = WRITE_NODE;
 
     match(WRITE);
@@ -614,7 +614,7 @@ TreeNode *mathexpr() {
     TreeNode *currentNode = term();
 
     while (currentToken.type == PLUS || currentToken.type == MINUS) {
-        TreeNode *parent;
+        TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
 
         parent->child[0] = currentNode;
@@ -633,7 +633,7 @@ TreeNode *factor() {
     TreeNode *currentNode = newexpr();
 
     while (currentToken.type == POWER) {
-        TreeNode *parent;
+        TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
 
         parent->child[1] = currentNode;
@@ -649,6 +649,11 @@ TreeNode *factor() {
 
 int main()
 {
+    ci = new CompilerInfo("input.txt", "output.txt", "debug.txt");
+//    while(currentToken.type != ENDFILE) {
+//        GetNextToken(ci, &currentToken);
+//        printf("%d\n", currentToken.type);
+//    }
     TreeNode *root = stmtseq();
     PrintTree(root);
 
