@@ -466,7 +466,7 @@ TreeNode *readstmt() {
     match(READ);
     currentNode->node_kind = READ_NODE;
 
-    TreeNode* newNode = new TreeNode();
+    TreeNode *newNode = new TreeNode();
     newNode->node_kind = ID_NODE;
     newNode->id = currentToken.str;
     newNode->expr_data_type = INTEGER;
@@ -588,10 +588,12 @@ TreeNode *assignstmt() {
     TreeNode *currentNode = new TreeNode();
     currentNode->node_kind = ASSIGN_NODE;
 
-    match(ID);
-    TreeNode *child;
+    TreeNode *child =  new TreeNode();
     child->id = currentToken.str;
     child->node_kind = ID_NODE;
+
+    match(ID);
+
     currentNode->child[0] = child;
     match(ASSIGN);
     currentNode->child[1] = expr();
