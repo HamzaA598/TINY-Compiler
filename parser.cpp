@@ -467,7 +467,7 @@ static TreeNode* expr() {
     {
         TreeNode* parent;
         parent->node_kind = OPER_NODE;
-        parent->oper = currentNode->oper;
+        parent->oper = currentToken.type;
 
         TreeNode* secondChild = mathexpr();
 
@@ -479,12 +479,54 @@ static TreeNode* expr() {
     return currentNode;
 }
 
+// term -> factor { (*|/) factor } left associative
 static TreeNode* term() {
+    TreeNode *currentNode = factor();
 
+    // handle: match operator
+
+    while(currentToken.type == TIMES || currentToken.type == DIVIDE)
+    {
+        TreeNode* parent;
+        parent->node_kind = OPER_NODE;
+        parent->oper = currentToken.type;
+
+        TreeNode* secondChild = factor();
+
+        parent->child[0] = currentNode;
+        parent->child[1] = secondChild;
+
+        currentNode = parent;
+    }
+    return currentNode;
 }
 
+// newexpr -> ( mathexpr ) | number | identifier
 static TreeNode* newexpr() {
+    TreeNode* currentNode;
 
+    // handle: match unknown
+
+    if(currentToken.type == LEFT_PAREN)
+    {
+        currentNode->child[0] = new TreeNode();
+        // handle: should leftparan and rightparan have a node kind?
+        // currentNode->child[0]->node_kind =
+        currentNode->child[1] = new TreeNode();
+//        currentNode->child[2] =
+    }
+    else if(currentToken.type == NUM) {
+        currentNode->node_kind = NUM_NODE;
+        // handle: store the number inside the node
+        // currentNode->num =
+    }
+    else if(currentToken.type == ID)
+    {
+        currentNode->node_kind == ID_NODE;
+        currentNode->id = currentToken.str;
+    }
+
+    return currentNode;
 }
 
 // stmtseq -> stmt { ; stmt }
