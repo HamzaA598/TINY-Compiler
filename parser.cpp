@@ -390,6 +390,7 @@ static CompilerInfo ci("input.txt", "output.txt", "debug.txt");
 
 static void match(TokenType expect) {
     if (currentToken.type == expect)
+        // get the next token
         GetNextToken(&ci, &currentToken); // advance the token if it is correct
     else
         throw ("ERROR! wrong token type");
@@ -467,12 +468,10 @@ static TreeNode *readstmt() {
 
     match(ID);
 
-    // handle: create an identifier
     TreeNode* newNode;
     newNode->node_kind = ID_NODE;
     newNode->id = currentToken.str;
-    // handle: what is the expr_data_type of the identifier?
-//    newNode->expr_data_type =
+    newNode->expr_data_type = INTEGER;
 
     currentNode->child[0] = newNode;
 
@@ -483,13 +482,16 @@ static TreeNode *readstmt() {
 static TreeNode *expr() {
     TreeNode *currentNode = mathexpr();
 
-    // handle: operator matching
     if (currentToken.type == LESS_THAN || currentToken.type == EQUAL) {
         TreeNode *parent;
         parent->node_kind = OPER_NODE;
         parent->oper = currentToken.type;
 
         parent->child[0] = currentNode;
+
+        // get the next token for the next function call
+        match(currentToken.type);
+
         parent->child[1] = mathexpr();
 
         currentNode = parent;
@@ -498,11 +500,9 @@ static TreeNode *expr() {
 }
 
 // term -> factor { (*|/) factor } left associative
+
 static TreeNode *term() {
     TreeNode *currentNode = factor();
-
-    // do not need to match before checking the token type
-    // factor() already got the next token for me
 
     while (currentToken.type == TIMES || currentToken.type == DIVIDE) {
         TreeNode *parent;
@@ -510,12 +510,12 @@ static TreeNode *term() {
         parent->oper = currentToken.type;
 
         parent->child[0] = currentNode;
+
+        match(currentToken.type);
+
         parent->child[1] = factor();
 
         currentNode = parent;
-
-        // handle: where should this line be put? before or after calling factor()?
-        match(currentToken.type);
     }
     return currentNode;
 }
@@ -524,18 +524,19 @@ static TreeNode *term() {
 static TreeNode *newexpr() {
     TreeNode *currentNode;
 
-    // handle: match
-
     if (currentToken.type == LEFT_PAREN) {
-        currentNode->child[0] = new TreeNode();
         // handle: should leftparan and rightparan have a node kind?
-        // currentNode->child[0]->node_kind =
-        currentNode->child[1] = mathexpr();
-//        currentNode->child[2] =
+        currentNode->child[0] = mathexpr();
     } else if (currentToken.type == NUM) {
         currentNode->node_kind = NUM_NODE;
         // handle: store the number inside the node
-        // currentNode->num =
+        int value = 0, i = 0;
+        while(currentToken.str[i] >= '0' && currentToken.str[i] <= '9')
+        {
+            value = value * 10 + (currentToken.str[i] - '0');
+            i++;
+        }
+         currentNode->num = value;
     } else if (currentToken.type == ID) {
         currentNode->node_kind = ID_NODE;
         currentNode->id = currentToken.str;
@@ -614,12 +615,12 @@ TreeNode *mathexpr() {
         TreeNode *parent;
         parent->node_kind = OPER_NODE;
 
-        parent->child[1] = currentNode;
+        parent->child[0] = currentNode;
         parent->oper = currentToken.type;
         currentNode = parent;
 
         match(currentToken.type);
-        currentNode->child[0] = term();
+        currentNode->child[1] = term();
     }
     return currentNode;
 }
@@ -632,11 +633,11 @@ TreeNode *factor() {
         TreeNode *parent;
         parent->node_kind = OPER_NODE;
 
-        parent->child[0] = currentNode;
+        parent->child[1] = currentNode;
         parent->oper = currentToken.type;
         currentNode = parent;
-        match(currentToken.type);
-        currentNode->child[1] = newexpr();
+        match(POWER);
+        currentNode->child[0] = newexpr();
     }
     return currentNode;
 }
