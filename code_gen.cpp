@@ -858,3 +858,16 @@ void CheckNode(TreeNode *curr_node)
             break;
     }
 }
+
+
+int main()
+{
+    TreeNode *root = Parse();
+    
+    // build symbol table here
+
+    // preform type checking
+    TypeCheck(root);
+
+    return 0
+}
