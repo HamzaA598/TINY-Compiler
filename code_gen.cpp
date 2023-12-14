@@ -869,5 +869,5 @@ int main()
     // preform type checking
     TypeCheck(root);
 
-    return 0
+    return 0;
 }
