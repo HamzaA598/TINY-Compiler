@@ -820,22 +820,41 @@ void CheckNode(TreeNode *curr_node)
     switch (curr_node->node_kind)
     {
         case IF_NODE:
+            if(curr_node->child[0]->expr_data_type != BOOLEAN)
+                printf("Error: Condition in 'if' statement must must be Boolean data type.\n");
             break;
         case REPEAT_NODE:
+            if(curr_node->child[1]->expr_data_type != BOOLEAN)
+                printf("Error: Repeat condition must must be Boolean data type.\n");
             break;
         case ASSIGN_NODE:
+            if(curr_node->child[0]->expr_data_type != INTEGER || 
+               curr_node->child[1]->expr_data_type != INTEGER)
+                printf("Error: Assignment requires both sides to be of Integer data type.\n");
             break;
         case READ_NODE:
+            if(curr_node->child[0]->expr_data_type != INTEGER) 
+                printf("Error: 'read' statement expects an Integer variable.\n");
             break;
         case WRITE_NODE:
+            if(curr_node->child[0]->expr_data_type != INTEGER) 
+                printf("Error: 'write' statement expects an Integer value.\n");
             break;
         case OPER_NODE:
+            if(curr_node->child[0]->expr_data_type != INTEGER || 
+               curr_node->child[1]->expr_data_type != INTEGER)
+                printf("Error: Operation must be applied to Integer values.\n");
             break;
         case NUM_NODE:
+            if(curr_node->expr_data_type != INTEGER)
+                printf("Error: Numeric constant must have Integer data type.\n");
             break;
         case ID_NODE:
+            if(curr_node->expr_data_type != INTEGER)
+                printf("Error: Identifier must have Integer data type.\n");
             break;
         default:
+            printf("Error: Unknown node type.\n");
             break;
     }
 }
