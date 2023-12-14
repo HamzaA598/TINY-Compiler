@@ -354,13 +354,13 @@ static CompilerInfo *ci;
 
 static void match(TokenType expect) {
     if (currentToken.type == expect)
-        // get the next token
-        GetNextToken(ci, &currentToken); // advance the token if it is correct
+        // get the next token for the next function call
+        GetNextToken(ci, &currentToken);
     else
         throw ("ERROR! wrong token type");
 }
 
-static void CopyToPointer(TreeNode *currentNode) {
+static void setNodeID(TreeNode *currentNode) {
     char *newStr = new char[MAX_TOKEN_LEN + 1];
     strcpy(newStr, currentToken.str);
     currentNode->id = newStr;
@@ -470,9 +470,10 @@ TreeNode *assignstmt() {
     currentNode->node_kind = ASSIGN_NODE;
 
     TreeNode *child = new TreeNode();
-    CopyToPointer(child);
-    CopyToPointer(currentNode);
+    setNodeID(child);
+    setNodeID(currentNode);
     child->node_kind = ID_NODE;
+    child->expr_data_type = INTEGER;
 
     match(ID);
 
@@ -490,9 +491,9 @@ TreeNode *readstmt() {
     currentNode->node_kind = READ_NODE;
 
     TreeNode *newNode = new TreeNode();
+    setNodeID(newNode);
+    setNodeID(currentNode);
     newNode->node_kind = ID_NODE;
-    CopyToPointer(newNode);
-    CopyToPointer(currentNode);
     newNode->expr_data_type = INTEGER;
 
     currentNode->child[0] = newNode;
@@ -520,10 +521,10 @@ TreeNode *expr() {
         TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
         parent->oper = currentToken.type;
+        parent->expr_data_type = BOOLEAN;
 
         parent->child[0] = currentNode;
 
-        // get the next token for the next function call
         match(currentToken.type);
 
         parent->child[1] = mathexpr();
@@ -540,6 +541,7 @@ TreeNode *mathexpr() {
     while (currentToken.type == PLUS || currentToken.type == MINUS) {
         TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
+        parent->expr_data_type = INTEGER;
 
         parent->child[0] = currentNode;
         parent->oper = currentToken.type;
@@ -560,6 +562,7 @@ TreeNode *term() {
         TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
         parent->oper = currentToken.type;
+        parent->expr_data_type = INTEGER;
 
         parent->child[0] = currentNode;
 
@@ -579,6 +582,7 @@ TreeNode *factor() {
     while (currentToken.type == POWER) {
         TreeNode *parent = new TreeNode();
         parent->node_kind = OPER_NODE;
+        parent->expr_data_type = INTEGER;
 
         parent->child[1] = currentNode;
         parent->oper = currentToken.type;
@@ -596,22 +600,22 @@ TreeNode *newexpr() {
     TreeNode *currentNode = new TreeNode();
 
     if (currentToken.type == LEFT_PAREN) {
-        // handle: should leftparan and rightparan have a node kind?
         match(LEFT_PAREN);
         currentNode->child[0] = mathexpr();
     } else if (currentToken.type == NUM) {
         currentNode->node_kind = NUM_NODE;
+        currentNode->expr_data_type = INTEGER;
         int value = 0, i = 0;
         while (currentToken.str[i] >= '0' && currentToken.str[i] <= '9') {
             value = value * 10 + (currentToken.str[i] - '0');
             i++;
         }
         currentNode->num = value;
-        // handle: store the number inside the node
         match(NUM);
     } else if (currentToken.type == ID) {
         currentNode->node_kind = ID_NODE;
-        CopyToPointer(currentNode);
+        currentNode->expr_data_type = INTEGER;
+        setNodeID(currentNode);
         match(ID);
     }
 
@@ -785,3 +789,53 @@ struct SymbolTable
         }
     }
 };
+
+
+static void CheckNode(TreeNode *curr_node);
+static void Postorder(TreeNode *curr_node);
+
+// performs type checking on the syntax tree
+// by postorder traversal
+void TypeCheck(TreeNode *root)
+{
+    Postorder(root);
+}
+
+
+void Postorder(TreeNode *curr_node)
+{
+    if(curr_node == NULL)
+        return;
+
+    for(int i = 0; i< MAX_CHILDREN; i++)
+        Postorder(curr_node->child[i]);
+
+    CheckNode(curr_node);
+    Postorder(curr_node->sibling);
+}
+
+
+void CheckNode(TreeNode *curr_node)
+{
+    switch (curr_node->node_kind)
+    {
+        case IF_NODE:
+            break;
+        case REPEAT_NODE:
+            break;
+        case ASSIGN_NODE:
+            break;
+        case READ_NODE:
+            break;
+        case WRITE_NODE:
+            break;
+        case OPER_NODE:
+            break;
+        case NUM_NODE:
+            break;
+        case ID_NODE:
+            break;
+        default:
+            break;
+    }
+}
