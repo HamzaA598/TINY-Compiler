@@ -634,6 +634,7 @@ TreeNode *newexpr() {
     if (currentToken.type == LEFT_PAREN) {
         match(LEFT_PAREN);
         currentNode->child[0] = mathexpr();
+        match(RIGHT_PAREN);
     } else if (currentToken.type == NUM) {
         currentNode->node_kind = NUM_NODE;
         currentNode->expr_data_type = INTEGER;
