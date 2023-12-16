@@ -899,14 +899,22 @@ void CheckNode(TreeNode *currentNode) {
             if (currentNode->child[0]->expr_data_type != INTEGER ||
                 currentNode->child[1]->expr_data_type != INTEGER)
                 printf("Error: Operation must be applied to Integer values.\n");
+            if(currentNode->oper ==EQUAL || currentNode->oper ==LESS_THAN)
+                currentNode->expr_data_type = BOOLEAN;
+            else
+                currentNode->expr_data_type = INTEGER;
             break;
         case NUM_NODE:
-            if (currentNode->expr_data_type != INTEGER)
-                printf("Error: Numeric constant must have Integer data type.\n");
+            //todo: is this correct? only set the type or check then set
+            // if (currentNode->expr_data_type != INTEGER)
+            //     printf("Error: Numeric constant must have Integer data type.\n");
+            currentNode->expr_data_type = INTEGER;
             break;
         case ID_NODE:
-            if (currentNode->expr_data_type != INTEGER)
-                printf("Error: Identifier must have Integer data type.\n");
+            //todo: is this correct? only set the type or check then set
+            // if (currentNode->expr_data_type != INTEGER)
+            //     printf("Error: Identifier must have Integer data type.\n");
+            currentNode->expr_data_type = INTEGER;
             break;
         default:
             printf("Error: Unknown node type.\n");
