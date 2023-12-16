@@ -793,8 +793,6 @@ static void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode);
 
 static void CheckNode(TreeNode *curr_node);
 
-static void Postorder(TreeNode *curr_node);
-
 
 // takes the root of the parse tree and builds the symbol table
 void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode) {
@@ -825,20 +823,15 @@ void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode) {
 
 // performs type checking on the syntax tree
 // by postorder traversal
-void TypeCheck(TreeNode *root) {
-    Postorder(root);
-}
-
-
-void Postorder(TreeNode *curr_node) {
+void TypeCheck(TreeNode *curr_node) {
     if (curr_node == NULL)
         return;
 
     for (int i = 0; i < MAX_CHILDREN; i++)
-        Postorder(curr_node->child[i]);
+        TypeCheck(curr_node->child[i]);
 
     CheckNode(curr_node);
-    Postorder(curr_node->sibling);
+    TypeCheck(curr_node->sibling);
 }
 
 
