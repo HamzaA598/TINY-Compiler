@@ -791,8 +791,9 @@ struct SymbolTable {
 
 static void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode);
 
-static void CheckNode(TreeNode *curr_node);
+static void CheckNode(TreeNode *currentNode);
 
+static void TypeCheck(TreeNode *currentNode);
 
 // takes the root of the parse tree and builds the symbol table
 void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode) {
@@ -823,52 +824,52 @@ void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode) {
 
 // performs type checking on the syntax tree
 // by postorder traversal
-void TypeCheck(TreeNode *curr_node) {
-    if (curr_node == NULL)
+void TypeCheck(TreeNode *currentNode) {
+    if (currentNode == NULL)
         return;
 
     for (int i = 0; i < MAX_CHILDREN; i++)
-        TypeCheck(curr_node->child[i]);
+        TypeCheck(currentNode->child[i]);
 
-    CheckNode(curr_node);
-    TypeCheck(curr_node->sibling);
+    CheckNode(currentNode);
+    TypeCheck(currentNode->sibling);
 }
 
 
-void CheckNode(TreeNode *curr_node) {
-    switch (curr_node->node_kind) {
+void CheckNode(TreeNode *currentNode) {
+    switch (currentNode->node_kind) {
         case IF_NODE:
-            if (curr_node->child[0]->expr_data_type != BOOLEAN)
+            if (currentNode->child[0]->expr_data_type != BOOLEAN)
                 printf("Error: Condition in 'if' statement must must be Boolean data type.\n");
             break;
         case REPEAT_NODE:
-            if (curr_node->child[1]->expr_data_type != BOOLEAN)
+            if (currentNode->child[1]->expr_data_type != BOOLEAN)
                 printf("Error: Repeat condition must must be Boolean data type.\n");
             break;
         case ASSIGN_NODE:
-            if (curr_node->child[0]->expr_data_type != INTEGER ||
-                curr_node->child[1]->expr_data_type != INTEGER)
+            if (currentNode->child[0]->expr_data_type != INTEGER ||
+                currentNode->child[1]->expr_data_type != INTEGER)
                 printf("Error: Assignment requires both sides to be of Integer data type.\n");
             break;
         case READ_NODE:
-            if (curr_node->child[0]->expr_data_type != INTEGER)
+            if (currentNode->child[0]->expr_data_type != INTEGER)
                 printf("Error: 'read' statement expects an Integer variable.\n");
             break;
         case WRITE_NODE:
-            if (curr_node->child[0]->expr_data_type != INTEGER)
+            if (currentNode->child[0]->expr_data_type != INTEGER)
                 printf("Error: 'write' statement expects an Integer value.\n");
             break;
         case OPER_NODE:
-            if (curr_node->child[0]->expr_data_type != INTEGER ||
-                curr_node->child[1]->expr_data_type != INTEGER)
+            if (currentNode->child[0]->expr_data_type != INTEGER ||
+                currentNode->child[1]->expr_data_type != INTEGER)
                 printf("Error: Operation must be applied to Integer values.\n");
             break;
         case NUM_NODE:
-            if (curr_node->expr_data_type != INTEGER)
+            if (currentNode->expr_data_type != INTEGER)
                 printf("Error: Numeric constant must have Integer data type.\n");
             break;
         case ID_NODE:
-            if (curr_node->expr_data_type != INTEGER)
+            if (currentNode->expr_data_type != INTEGER)
                 printf("Error: Identifier must have Integer data type.\n");
             break;
         default:
