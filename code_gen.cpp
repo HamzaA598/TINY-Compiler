@@ -789,42 +789,38 @@ struct SymbolTable {
     }
 };
 
-static void buildNode(SymbolTable* symbolTable, TreeNode* currentNode);
-
-static SymbolTable* buildSymbolTable(TreeNode* currentNode);
+static void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode);
 
 static void CheckNode(TreeNode *curr_node);
 
 static void Postorder(TreeNode *curr_node);
 
-void buildNode(SymbolTable* symbolTable, TreeNode* currentNode) {
 
+// takes the root of the parse tree and builds the symbol table
+void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode) {
     if(currentNode == nullptr)
         return;
 
+    if(currentNode->node_kind == ID_NODE) {
+        if (currentNode->id[0] == 'f')
+            printf("%d", currentNode->node_kind);
+        symbolTable->Insert(currentNode->id, currentNode->line_num);
+    }
+
+    // build children
     for(int i = 0; i<MAX_CHILDREN; i++)
     {
-        // todo: correctly check if the id is empty
-        if(currentNode->id != nullptr)
-            symbolTable->Insert(currentNode->id, currentNode->line_num);
-
         // todo: what is the difference between preorder and postorder?
-        buildNode(symbolTable, currentNode->child[i]);
+        buildSymbolTable(symbolTable, currentNode->child[i]);
     }
-}
 
-// takes the root of the parse tree and builds the symbol table
-SymbolTable* buildSymbolTable(TreeNode* root) {
-    SymbolTable* symbolTable = new SymbolTable;
-
-    TreeNode* currentNode = root;
-    while(currentNode != nullptr)
+    // build siblings
+    TreeNode* currentSibling = currentNode->sibling;
+    while(currentSibling != nullptr)
     {
-        buildNode(symbolTable, currentNode);
-        currentNode = currentNode->sibling;
+        buildSymbolTable(symbolTable, currentSibling);
+        currentSibling = currentSibling->sibling;
     }
-
-    return symbolTable;
 }
 
 // performs type checking on the syntax tree
@@ -890,10 +886,15 @@ void CheckNode(TreeNode *curr_node) {
 
 
 int main() {
+    // todo: linenum is not set in for every node in the parse tree
     TreeNode *root = Parse();
+    PrintTree(root);
 
     // build symbol table here
-
+    // todo: fact is listed 5 times, should be 4, do linenum to check
+    auto* symbolTable = new SymbolTable();
+    buildSymbolTable(symbolTable, root);
+    symbolTable->Print();
 
     // preform type checking
     TypeCheck(root);
