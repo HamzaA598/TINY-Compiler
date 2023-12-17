@@ -824,8 +824,6 @@ void buildSymbolTable(SymbolTable *symbolTable, TreeNode *currentNode) {
     if (currentNode == nullptr)
         return;
 
-    printf("%d, %s\n", currentNode->line_num, NodeKindStr[currentNode->node_kind]);
-
     if (currentNode->node_kind == ID_NODE || currentNode->node_kind == ASSIGN_NODE ||
         currentNode->node_kind == READ_NODE) {
         symbolTable->Insert(currentNode->id, currentNode->line_num);
@@ -899,6 +897,93 @@ void CheckNode(TreeNode *currentNode) {
     }
 }
 
+char operStrings[] = {
+    '=', ':', '<','+', '-','*','/', 'p'
+};
+
+void realSimulate(FILE* file, TreeNode *currentNode)
+{
+      switch (currentNode->node_kind) {
+        case IF_NODE:
+            break;
+        case REPEAT_NODE:
+            break;
+        case ASSIGN_NODE:
+            break;
+        case WRITE_NODE:
+            fprintf(file, "cout << \"%s: \"%s << \"\n\";\n",currentNode->id, currentNode->id);
+            break;
+        case READ_NODE:
+            fprintf(file, "int %s;\n", currentNode->id);
+            fprintf(file, "cin >> %s;\n",currentNode->id);
+            break;
+        case OPER_NODE:
+            switch (currentNode->oper)
+            {
+            case ASSIGN:
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, "=");
+                realSimulate(file, currentNode->child[1]);
+                break;
+            case EQUAL:
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, "==");
+                realSimulate(file, currentNode->child[1]);                
+                break;
+            case LESS_THAN:
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, "<");
+                realSimulate(file, currentNode->child[1]);                
+                break;
+            case PLUS:
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, "+");
+                realSimulate(file, currentNode->child[1]);                
+                break;
+            case MINUS:
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, "-");
+                realSimulate(file, currentNode->child[1]);
+                break;
+            case TIMES:
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, "*");
+                realSimulate(file, currentNode->child[1]);
+                break;
+            case DIVIDE:
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, "/");
+                realSimulate(file, currentNode->child[1]);
+                break;
+            case POWER:
+                fprintf(file, "pow(");
+                realSimulate(file, currentNode->child[0]);
+                fprintf(file, ",");
+                realSimulate(file, currentNode->child[1]);
+                fprintf(file, ")");
+                break;
+            default:
+                break;
+            }         
+            break;
+        case NUM_NODE:
+            fprintf(file, "%d", currentNode->num);
+            break;
+        case ID_NODE:
+            fprintf(file, "%s", currentNode->id);
+            break;
+        default:
+            break;
+      }
+}
+
+void simulate(TreeNode *root)
+{
+    FILE* simulationFile = fopen("simulation.cpp", "w");
+    fprintf(simulationFile, "#include <iostream>\n\nint main()\n{");
+    realSimulate(simulationFile, root);
+    fprintf(simulationFile, "return 0;\n}");
+}
 
 int main() {
     CompilerInfo *ci = new CompilerInfo("input.txt", "output.txt", "debug.txt");
@@ -914,7 +999,6 @@ int main() {
     auto *symbolTable = new SymbolTable();
     buildSymbolTable(symbolTable, root);
     symbolTable->Print();
-    printf("%d", symbolTable->Hash("fact"));
 
     // preform type checking
    TypeCheck(root);
