@@ -802,8 +802,8 @@ void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode) {
         return;
 
     if(currentNode->node_kind == ID_NODE) {
-        if (currentNode->id[0] == 'f')
-            printf("%d", currentNode->node_kind);
+//        if (currentNode->id[0] == 'f')
+//            printf("%d", currentNode->node_kind);
         symbolTable->Insert(currentNode->id, currentNode->line_num);
     }
 
