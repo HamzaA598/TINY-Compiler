@@ -883,13 +883,8 @@ void CheckNode(TreeNode *currentNode) {
                 printf("Error: Repeat condition must must be Boolean data type.\n");
             break;
         case ASSIGN_NODE:
-            if (currentNode->child[0]->expr_data_type != INTEGER ||
-                currentNode->child[1]->expr_data_type != INTEGER)
-                printf("Error: Assignment requires both sides to be of Integer data type.\n");
-            break;
-        case READ_NODE:
             if (currentNode->child[0]->expr_data_type != INTEGER)
-                printf("Error: 'read' statement expects an Integer variable.\n");
+                printf("Error: Assignment requires both sides to be of Integer data type.\n");
             break;
         case WRITE_NODE:
             if (currentNode->child[0]->expr_data_type != INTEGER)
@@ -917,7 +912,6 @@ void CheckNode(TreeNode *currentNode) {
             currentNode->expr_data_type = INTEGER;
             break;
         default:
-            printf("Error: Unknown node type.\n");
             break;
     }
 }
