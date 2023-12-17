@@ -881,15 +881,9 @@ void CheckNode(TreeNode *currentNode) {
                 currentNode->expr_data_type = INTEGER;
             break;
         case NUM_NODE:
-            //todo: is this correct? only set the type or check then set
-            // if (currentNode->expr_data_type != INTEGER)
-            //     printf("Error: Numeric constant must have Integer data type.\n");
             currentNode->expr_data_type = INTEGER;
             break;
         case ID_NODE:
-            //todo: is this correct? only set the type or check then set
-            // if (currentNode->expr_data_type != INTEGER)
-            //     printf("Error: Identifier must have Integer data type.\n");
             currentNode->expr_data_type = INTEGER;
             break;
         default:
@@ -897,93 +891,95 @@ void CheckNode(TreeNode *currentNode) {
     }
 }
 
-char operStrings[] = {
-    '=', ':', '<','+', '-','*','/', 'p'
-};
-
 void realSimulate(FILE* file, TreeNode *currentNode)
 {
-    if(currentNode == NULL)
+    if (currentNode == NULL)
         return;
 
-      switch (currentNode->node_kind) {
-        case IF_NODE:
+    switch (currentNode->node_kind) {
+    case IF_NODE:
+        fprintf(file, "if (");
+        realSimulate(file, currentNode->child[0]);
+        fprintf(file, ")\n{\n");
+        realSimulate(file, currentNode->child[1]);
+        fprintf(file, "\n}\n");
+        break;
+    case REPEAT_NODE:
+        break;
+    case ASSIGN_NODE:
+        fprintf(file, "%s = ", currentNode->id);
+        realSimulate(file, currentNode->child[0]);
+        fprintf(file, ";\n");
+        break;
+    case WRITE_NODE:
+        fprintf(file, "cout << \"%s: \"<< %s << \"\\n\";\n", currentNode->child[0]->id, currentNode->child[0]->id);
+        break;
+    case READ_NODE:
+        fprintf(file, "int %s;\n", currentNode->id);
+        fprintf(file, "cin >> %s;\n", currentNode->id);
+        break;
+    case OPER_NODE:
+        switch (currentNode->oper)
+        {
+        case EQUAL:
+            realSimulate(file, currentNode->child[0]);
+            fprintf(file, "==");
+            realSimulate(file, currentNode->child[1]);
             break;
-        case REPEAT_NODE:
+        case LESS_THAN:
+            realSimulate(file, currentNode->child[0]);
+            fprintf(file, "<");
+            realSimulate(file, currentNode->child[1]);
             break;
-        case ASSIGN_NODE:
+        case PLUS:
+            realSimulate(file, currentNode->child[0]);
+            fprintf(file, "+");
+            realSimulate(file, currentNode->child[1]);
             break;
-        case WRITE_NODE:
-            fprintf(file, "cout << \"%s: \"%s << \"\n\";\n",currentNode->id, currentNode->id);
+        case MINUS:
+            realSimulate(file, currentNode->child[0]);
+            fprintf(file, "-");
+            realSimulate(file, currentNode->child[1]);
             break;
-        case READ_NODE:
-            fprintf(file, "int %s;\n", currentNode->id);
-            fprintf(file, "cin >> %s;\n",currentNode->id);
+        case TIMES:
+            realSimulate(file, currentNode->child[0]);
+            fprintf(file, "*");
+            realSimulate(file, currentNode->child[1]);
             break;
-        case OPER_NODE:
-            switch (currentNode->oper)
-            {
-            case ASSIGN:
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, "=");
-                realSimulate(file, currentNode->child[1]);
-                break;
-            case EQUAL:
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, "==");
-                realSimulate(file, currentNode->child[1]);                
-                break;
-            case LESS_THAN:
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, "<");
-                realSimulate(file, currentNode->child[1]);                
-                break;
-            case PLUS:
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, "+");
-                realSimulate(file, currentNode->child[1]);                
-                break;
-            case MINUS:
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, "-");
-                realSimulate(file, currentNode->child[1]);
-                break;
-            case TIMES:
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, "*");
-                realSimulate(file, currentNode->child[1]);
-                break;
-            case DIVIDE:
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, "/");
-                realSimulate(file, currentNode->child[1]);
-                break;
-            case POWER:
-                fprintf(file, "pow(");
-                realSimulate(file, currentNode->child[0]);
-                fprintf(file, ",");
-                realSimulate(file, currentNode->child[1]);
-                fprintf(file, ")");
-                break;
-            default:
-                break;
-            }         
+        case DIVIDE:
+            realSimulate(file, currentNode->child[0]);
+            fprintf(file, "/");
+            realSimulate(file, currentNode->child[1]);
             break;
-        case NUM_NODE:
-            fprintf(file, "%d", currentNode->num);
-            break;
-        case ID_NODE:
-            fprintf(file, "%s", currentNode->id);
+        case POWER:
+            fprintf(file, "pow(");
+            realSimulate(file, currentNode->child[0]);
+            fprintf(file, ",");
+            realSimulate(file, currentNode->child[1]);
+            fprintf(file, ")");
             break;
         default:
             break;
-      }
+        }
+        break;
+    case NUM_NODE:
+        fprintf(file, "%d", currentNode->num);
+        break;
+    case ID_NODE:
+        fprintf(file, "%s", currentNode->id);
+        break;
+    default:
+        break;
+    }
+
+    if (currentNode->sibling != NULL)
+        realSimulate(file, currentNode->sibling);
 }
 
 void simulate(TreeNode *root)
 {
     FILE* simulationFile = fopen("simulation.cpp", "w");
-    fprintf(simulationFile, "#include <iostream>\n\nint main()\n{");
+    fprintf(simulationFile, "#include <iostream>\n#include <cmath>\n\n using namespace std;\n\nint main()\n{");
     realSimulate(simulationFile, root);
     fprintf(simulationFile, "return 0;\n}");
 }
@@ -1005,6 +1001,6 @@ int main() {
 
     // preform type checking
    TypeCheck(root);
-
+    simulate(root);
     return 0;
 }
