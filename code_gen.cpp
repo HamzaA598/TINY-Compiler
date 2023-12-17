@@ -903,6 +903,9 @@ char operStrings[] = {
 
 void realSimulate(FILE* file, TreeNode *currentNode)
 {
+    if(currentNode == NULL)
+        return;
+
       switch (currentNode->node_kind) {
         case IF_NODE:
             break;
