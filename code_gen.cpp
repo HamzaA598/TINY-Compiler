@@ -917,7 +917,7 @@ int main() {
     printf("%d", symbolTable->Hash("fact"));
 
     // preform type checking
-//    TypeCheck(root);
+   TypeCheck(root);
 
     return 0;
 }
