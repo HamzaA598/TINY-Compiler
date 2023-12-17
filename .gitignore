@@ -4,4 +4,6 @@ CMakeLists.txt
 .vscode/settings.json
 parser.cpp
 scanner.cpp
-
+/output
+debug.txt
+output.txt
