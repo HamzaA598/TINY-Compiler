@@ -395,7 +395,7 @@ void Match(CompilerInfo* pci, ParseInfo* ppi, TokenType expected_token_type)
     if(ppi->next_token.type!=expected_token_type) throw 0;
     GetNextToken(pci, &ppi->next_token);
 
-    fprintf(pci->debug_file.file, "[%d] %s (%s)\n", pci->in_file.cur_line_num, ppi->next_token.str, TokenTypeStr[ppi->next_token.type]); fflush(pci->debug_file.file);
+    fprintf(pci->debug_file.file, "[%d] %s (%s)\n", pci->in_file.cur_line_num-1, ppi->next_token.str, TokenTypeStr[ppi->next_token.type]); fflush(pci->debug_file.file);
 }
 
 // stmtseq -> stmt { ; stmt }
@@ -445,7 +445,7 @@ TreeNode* IfStmt(CompilerInfo* pci, ParseInfo* ppi)
 
     TreeNode* tree=new TreeNode;
     tree->node_kind=IF_NODE;
-    tree->line_num=pci->in_file.cur_line_num;
+    tree->line_num=pci->in_file.cur_line_num-1;
 
     Match(pci, ppi, IF); tree->child[0]=Expr(pci, ppi);
     Match(pci, ppi, THEN); tree->child[1]=StmtSeq(pci, ppi);
@@ -463,7 +463,7 @@ TreeNode* RepeatStmt(CompilerInfo* pci, ParseInfo* ppi)
 
     TreeNode* tree=new TreeNode;
     tree->node_kind=REPEAT_NODE;
-    tree->line_num=pci->in_file.cur_line_num;
+    tree->line_num=pci->in_file.cur_line_num-1;
 
     Match(pci, ppi, REPEAT); tree->child[0]=StmtSeq(pci, ppi);
     Match(pci, ppi, UNTIL); tree->child[1]=Expr(pci, ppi);
@@ -479,7 +479,7 @@ TreeNode* AssignStmt(CompilerInfo* pci, ParseInfo* ppi)
 
     TreeNode* tree=new TreeNode;
     tree->node_kind=ASSIGN_NODE;
-    tree->line_num=pci->in_file.cur_line_num;
+    tree->line_num=pci->in_file.cur_line_num-1;
 
     if(ppi->next_token.type==ID) AllocateAndCopy(&tree->id, ppi->next_token.str);
     Match(pci, ppi, ID);
@@ -496,7 +496,7 @@ TreeNode* ReadStmt(CompilerInfo* pci, ParseInfo* ppi)
 
     TreeNode* tree=new TreeNode;
     tree->node_kind=READ_NODE;
-    tree->line_num=pci->in_file.cur_line_num;
+    tree->line_num=pci->in_file.cur_line_num-1;
 
     Match(pci, ppi, READ);
     if(ppi->next_token.type==ID) AllocateAndCopy(&tree->id, ppi->next_token.str);
@@ -513,7 +513,7 @@ TreeNode* WriteStmt(CompilerInfo* pci, ParseInfo* ppi)
 
     TreeNode* tree=new TreeNode;
     tree->node_kind=WRITE_NODE;
-    tree->line_num=pci->in_file.cur_line_num;
+    tree->line_num=pci->in_file.cur_line_num-1;
 
     Match(pci, ppi, WRITE);
     tree->child[0]=Expr(pci, ppi);
@@ -534,7 +534,7 @@ TreeNode* Expr(CompilerInfo* pci, ParseInfo* ppi)
         TreeNode* new_tree=new TreeNode;
         new_tree->node_kind=OPER_NODE;
         new_tree->oper=ppi->next_token.type;
-        new_tree->line_num=pci->in_file.cur_line_num;
+        new_tree->line_num=pci->in_file.cur_line_num-1;
 
         new_tree->child[0]=tree;
         Match(pci, ppi, ppi->next_token.type);
@@ -559,7 +559,7 @@ TreeNode* MathExpr(CompilerInfo* pci, ParseInfo* ppi)
         TreeNode* new_tree=new TreeNode;
         new_tree->node_kind=OPER_NODE;
         new_tree->oper=ppi->next_token.type;
-        new_tree->line_num=pci->in_file.cur_line_num;
+        new_tree->line_num=pci->in_file.cur_line_num-1;
 
         new_tree->child[0]=tree;
         Match(pci, ppi, ppi->next_token.type);
@@ -583,7 +583,7 @@ TreeNode* Term(CompilerInfo* pci, ParseInfo* ppi)
         TreeNode* new_tree=new TreeNode;
         new_tree->node_kind=OPER_NODE;
         new_tree->oper=ppi->next_token.type;
-        new_tree->line_num=pci->in_file.cur_line_num;
+        new_tree->line_num=pci->in_file.cur_line_num-1;
 
         new_tree->child[0]=tree;
         Match(pci, ppi, ppi->next_token.type);
@@ -607,7 +607,7 @@ TreeNode* Factor(CompilerInfo* pci, ParseInfo* ppi)
         TreeNode* new_tree=new TreeNode;
         new_tree->node_kind=OPER_NODE;
         new_tree->oper=ppi->next_token.type;
-        new_tree->line_num=pci->in_file.cur_line_num;
+        new_tree->line_num=pci->in_file.cur_line_num-1;
 
         new_tree->child[0]=tree;
         Match(pci, ppi, ppi->next_token.type);
@@ -632,7 +632,7 @@ TreeNode* NewExpr(CompilerInfo* pci, ParseInfo* ppi)
         tree->node_kind=NUM_NODE;
         char* num_str=ppi->next_token.str;
         tree->num=0; while(*num_str) tree->num=tree->num*10+((*num_str++)-'0');
-        tree->line_num=pci->in_file.cur_line_num;
+        tree->line_num=pci->in_file.cur_line_num-1;
         Match(pci, ppi, ppi->next_token.type);
 
         pci->debug_file.Out("End NewExpr");
@@ -644,7 +644,7 @@ TreeNode* NewExpr(CompilerInfo* pci, ParseInfo* ppi)
         TreeNode* tree=new TreeNode;
         tree->node_kind=ID_NODE;
         AllocateAndCopy(&tree->id, ppi->next_token.str);
-        tree->line_num=pci->in_file.cur_line_num;
+        tree->line_num=pci->in_file.cur_line_num-1;
         Match(pci, ppi, ppi->next_token.type);
 
         pci->debug_file.Out("End NewExpr");
@@ -682,6 +682,7 @@ TreeNode* Parse(CompilerInfo* pci)
 
 void PrintTree(TreeNode* node, int sh=0)
 {
+    printf("[%d]", node->line_num);
     int i, NSH=3;
     for(i=0;i<sh;i++) printf(" ");
 
