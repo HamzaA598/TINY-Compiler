@@ -5,4 +5,5 @@ CMakeLists.txt
 parser.cpp
 scanner.cpp
 /output
-
+debug.txt
+output.txt
