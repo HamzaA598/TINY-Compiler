@@ -10,5 +10,5 @@ if 0<x then {compute only if x>=1}
     fact := fact * x;
     x:=x-1
   until x=0;
-  write fact {output factorial}
+  write fact
 end

@@ -837,7 +837,10 @@ void buildSymbolTable(SymbolTable* symbolTable, TreeNode* currentNode) {
     if(currentNode == nullptr)
         return;
 
-    if(currentNode->node_kind == ID_NODE) {
+    printf("%d, %d", currentNode->node_kind, currentNode->line_num);
+
+    if(currentNode->node_kind == ID_NODE || currentNode->node_kind == ASSIGN_NODE || currentNode->node_kind == READ_NODE) {
+
 //        if (currentNode->id[0] == 'f')
 //            printf("%d", currentNode->node_kind);
         symbolTable->Insert(currentNode->id, currentNode->line_num);
@@ -931,15 +934,17 @@ int main() {
     TreeNode *root = Parse(ci);
     PrintTree(root);
 
+
     // build symbol table here
     // todo: fact is listed 5 times, should be 4, do linenum to check
     // DONE as parser now handles the linenum correctly
     auto* symbolTable = new SymbolTable();
     buildSymbolTable(symbolTable, root);
     symbolTable->Print();
+    printf("%d", symbolTable->Hash("fact"));
 
     // preform type checking
-    TypeCheck(root);
+//    TypeCheck(root);
 
     return 0;
 }
