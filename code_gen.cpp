@@ -941,6 +941,7 @@ void realSimulate(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
             break;
         case READ_NODE:
             fprintf(file, "int %s;\n", currentNode->id);
+            fprintf(file, "cout << \"Enter %s: \";", currentNode->id);
             fprintf(file, "cin >> %s;\n", currentNode->id);
             break;
         case OPER_NODE:
