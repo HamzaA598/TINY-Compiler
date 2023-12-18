@@ -771,8 +771,7 @@ struct SymbolTable {
         vi->memloc = 0;
         AllocateAndCopy(&vi->name, name);
 
-        if (!prev)
-            var_info[h] = vi;
+        if (!prev) var_info[h] = vi;
         else prev->next_var = vi;
     }
 
@@ -829,7 +828,7 @@ void buildSymbolTable(SymbolTable *symbolTable, TreeNode *currentNode) {
         symbolTable->Insert(currentNode->id, currentNode->line_num);
     }
 
-    if(currentNode->node_kind == ASSIGN_NODE) {
+    if(currentNode->node_kind == ASSIGN_NODE && currentNode->child[0]->node_kind == NUM_NODE) {
         VariableInfo* variableInfo = symbolTable->var_info[symbolTable->Hash(currentNode->id)];
 
         // the first time that the variable appears
