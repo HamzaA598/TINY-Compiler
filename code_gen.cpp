@@ -830,7 +830,6 @@ void buildSymbolTable(SymbolTable *symbolTable, TreeNode *currentNode) {
 
     // build children
     for (int i = 0; i < MAX_CHILDREN; i++) {
-        // todo: what is the difference between preorder and postorder?
         buildSymbolTable(symbolTable, currentNode->child[i]);
     }
 
@@ -897,7 +896,7 @@ void handleIdDatatype(FILE* file, SymbolTable* symbolTable, TreeNode* currentNod
         fprintf(file, "int ");
 }
 
-void realSimulate(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
+void SimulateNode(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
     if (currentNode == NULL)
         return;
 
@@ -906,9 +905,9 @@ void realSimulate(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
     switch (currentNode->node_kind) {
         case IF_NODE:
             fprintf(file, "if (");
-            realSimulate(file, symbolTable, currentNode->child[0]);
+            SimulateNode(file, symbolTable, currentNode->child[0]);
             fprintf(file, ")\n{\n");
-            realSimulate(file, symbolTable, currentNode->child[1]);
+            SimulateNode(file, symbolTable, currentNode->child[1]);
             fprintf(file, "\n}\n");
             break;
         case REPEAT_NODE:
@@ -922,17 +921,15 @@ void realSimulate(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
              * } while(condition);
              */
             fprintf(file, "do {\n");
-            realSimulate(file, symbolTable, currentNode->child[0]);
+            SimulateNode(file, symbolTable, currentNode->child[0]);
             fprintf(file, "} while(");
-            realSimulate(file, symbolTable, currentNode->child[1]);
+            SimulateNode(file, symbolTable, currentNode->child[1]);
             fprintf(file, ");\n\n");
             break;
         case ASSIGN_NODE: {
-            // todo: i hate their implementation. should call this function only in case it's and id, not assign.
-            //  but because they put the id in the assign node directly, not as a child.
             handleIdDatatype(file, symbolTable, currentNode);
             fprintf(file, "%s = ", currentNode->id);
-            realSimulate(file, symbolTable, currentNode->child[0]);
+            SimulateNode(file, symbolTable, currentNode->child[0]);
             fprintf(file, ";\n");
             break;
         }
@@ -947,40 +944,40 @@ void realSimulate(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
         case OPER_NODE:
             switch (currentNode->oper) {
                 case EQUAL:
-                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    SimulateNode(file, symbolTable, currentNode->child[0]);
                     fprintf(file, "==");
-                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    SimulateNode(file, symbolTable, currentNode->child[1]);
                     break;
                 case LESS_THAN:
-                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    SimulateNode(file, symbolTable, currentNode->child[0]);
                     fprintf(file, "<");
-                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    SimulateNode(file, symbolTable, currentNode->child[1]);
                     break;
                 case PLUS:
-                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    SimulateNode(file, symbolTable, currentNode->child[0]);
                     fprintf(file, "+");
-                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    SimulateNode(file, symbolTable, currentNode->child[1]);
                     break;
                 case MINUS:
-                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    SimulateNode(file, symbolTable, currentNode->child[0]);
                     fprintf(file, "-");
-                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    SimulateNode(file, symbolTable, currentNode->child[1]);
                     break;
                 case TIMES:
-                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    SimulateNode(file, symbolTable, currentNode->child[0]);
                     fprintf(file, "*");
-                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    SimulateNode(file, symbolTable, currentNode->child[1]);
                     break;
                 case DIVIDE:
-                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    SimulateNode(file, symbolTable, currentNode->child[0]);
                     fprintf(file, "/");
-                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    SimulateNode(file, symbolTable, currentNode->child[1]);
                     break;
                 case POWER:
                     fprintf(file, "pow(");
-                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    SimulateNode(file, symbolTable, currentNode->child[0]);
                     fprintf(file, ",");
-                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    SimulateNode(file, symbolTable, currentNode->child[1]);
                     fprintf(file, ")");
                     break;
                 default:
@@ -999,13 +996,13 @@ void realSimulate(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
     }
 
     if (currentNode->sibling != NULL)
-        realSimulate(file, symbolTable, currentNode->sibling);
+        SimulateNode(file, symbolTable, currentNode->sibling);
 }
 
-void simulate(SymbolTable* symbolTable, TreeNode *root) {
+void SimulateProgram(SymbolTable* symbolTable, TreeNode *root) {
     FILE *simulationFile = fopen("simulation.cpp", "w");
     fprintf(simulationFile, "#include <iostream>\n#include <cmath>\n\n using namespace std;\n\nint main()\n{");
-    realSimulate(simulationFile, symbolTable, root);
+    SimulateNode(simulationFile, symbolTable, root);
     fprintf(simulationFile, "return 0;\n}");
 }
 
@@ -1024,6 +1021,6 @@ int main() {
     symbolTable->Print();
 
     // code simulation
-    simulate(symbolTable, root);
+    SimulateProgram(symbolTable, root);
     return 0;
 }
