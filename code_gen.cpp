@@ -669,7 +669,6 @@ TreeNode *Parse(CompilerInfo *pci) {
 }
 
 void PrintTree(TreeNode *node, int sh = 0) {
-    printf("[%d]", node->line_num);
     int i, NSH = 3;
     for (i = 0; i < sh; i++) printf(" ");
 
