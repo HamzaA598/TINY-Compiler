@@ -891,116 +891,141 @@ void CheckNode(TreeNode *currentNode) {
     }
 }
 
-void realSimulate(FILE* file, TreeNode *currentNode)
+void handleIdDatatype(FILE* file, SymbolTable* symbolTable, TreeNode* currentNode)
 {
+    int firstLineAppearance = symbolTable->var_info[symbolTable->Hash(currentNode->id)]->head_line->line_num;
+    if(firstLineAppearance == currentNode->line_num)
+        fprintf(file, "int ");
+}
+
+void realSimulate(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
     if (currentNode == NULL)
         return;
 
+    printf("");
+
     switch (currentNode->node_kind) {
-    case IF_NODE:
-        fprintf(file, "if (");
-        realSimulate(file, currentNode->child[0]);
-        fprintf(file, ")\n{\n");
-        realSimulate(file, currentNode->child[1]);
-        fprintf(file, "\n}\n");
-        break;
-    case REPEAT_NODE:
-        break;
-    case ASSIGN_NODE:
-        fprintf(file, "%s = ", currentNode->id);
-        realSimulate(file, currentNode->child[0]);
-        fprintf(file, ";\n");
-        break;
-    case WRITE_NODE:
-        fprintf(file, "cout << \"%s: \"<< %s << \"\\n\";\n", currentNode->child[0]->id, currentNode->child[0]->id);
-        break;
-    case READ_NODE:
-        fprintf(file, "int %s;\n", currentNode->id);
-        fprintf(file, "cin >> %s;\n", currentNode->id);
-        break;
-    case OPER_NODE:
-        switch (currentNode->oper)
-        {
-        case EQUAL:
-            realSimulate(file, currentNode->child[0]);
-            fprintf(file, "==");
-            realSimulate(file, currentNode->child[1]);
+        case IF_NODE:
+            fprintf(file, "if (");
+            realSimulate(file, symbolTable, currentNode->child[0]);
+            fprintf(file, ")\n{\n");
+            realSimulate(file, symbolTable, currentNode->child[1]);
+            fprintf(file, "\n}\n");
             break;
-        case LESS_THAN:
-            realSimulate(file, currentNode->child[0]);
-            fprintf(file, "<");
-            realSimulate(file, currentNode->child[1]);
+        case REPEAT_NODE:
+            /*
+             * repeat
+             *     statement
+             * until condition
+             *
+             * do {
+             *     statement
+             * } while(condition);
+             */
+            fprintf(file, "do {\n");
+            realSimulate(file, symbolTable, currentNode->child[0]);
+            fprintf(file, "} while(");
+            realSimulate(file, symbolTable, currentNode->child[1]);
+            fprintf(file, ");\n\n");
             break;
-        case PLUS:
-            realSimulate(file, currentNode->child[0]);
-            fprintf(file, "+");
-            realSimulate(file, currentNode->child[1]);
+        case ASSIGN_NODE: {
+            // todo: i hate their implementation. should call this function only in case it's and id, not assign.
+            //  but because they put the id in the assign node directly, not as a child.
+            handleIdDatatype(file, symbolTable, currentNode);
+            fprintf(file, "%s = ", currentNode->id);
+            realSimulate(file, symbolTable, currentNode->child[0]);
+            fprintf(file, ";\n");
             break;
-        case MINUS:
-            realSimulate(file, currentNode->child[0]);
-            fprintf(file, "-");
-            realSimulate(file, currentNode->child[1]);
+        }
+        case WRITE_NODE:
+            fprintf(file, "cout << \"%s: \"<< %s << \"\\n\";\n", currentNode->child[0]->id, currentNode->child[0]->id);
             break;
-        case TIMES:
-            realSimulate(file, currentNode->child[0]);
-            fprintf(file, "*");
-            realSimulate(file, currentNode->child[1]);
+        case READ_NODE:
+            fprintf(file, "int %s;\n", currentNode->id);
+            fprintf(file, "cin >> %s;\n", currentNode->id);
             break;
-        case DIVIDE:
-            realSimulate(file, currentNode->child[0]);
-            fprintf(file, "/");
-            realSimulate(file, currentNode->child[1]);
+        case OPER_NODE:
+            switch (currentNode->oper) {
+                case EQUAL:
+                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    fprintf(file, "==");
+                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    break;
+                case LESS_THAN:
+                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    fprintf(file, "<");
+                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    break;
+                case PLUS:
+                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    fprintf(file, "+");
+                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    break;
+                case MINUS:
+                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    fprintf(file, "-");
+                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    break;
+                case TIMES:
+                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    fprintf(file, "*");
+                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    break;
+                case DIVIDE:
+                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    fprintf(file, "/");
+                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    break;
+                case POWER:
+                    fprintf(file, "pow(");
+                    realSimulate(file, symbolTable, currentNode->child[0]);
+                    fprintf(file, ",");
+                    realSimulate(file, symbolTable, currentNode->child[1]);
+                    fprintf(file, ")");
+                    break;
+                default:
+                    break;
+            }
             break;
-        case POWER:
-            fprintf(file, "pow(");
-            realSimulate(file, currentNode->child[0]);
-            fprintf(file, ",");
-            realSimulate(file, currentNode->child[1]);
-            fprintf(file, ")");
+        case NUM_NODE:
+            fprintf(file, "%d", currentNode->num);
+            break;
+        case ID_NODE:
+            handleIdDatatype(file, symbolTable, currentNode);
+            fprintf(file, "%s", currentNode->id);
             break;
         default:
             break;
-        }
-        break;
-    case NUM_NODE:
-        fprintf(file, "%d", currentNode->num);
-        break;
-    case ID_NODE:
-        fprintf(file, "%s", currentNode->id);
-        break;
-    default:
-        break;
     }
 
     if (currentNode->sibling != NULL)
-        realSimulate(file, currentNode->sibling);
+        realSimulate(file, symbolTable, currentNode->sibling);
 }
 
-void simulate(TreeNode *root)
-{
-    FILE* simulationFile = fopen("simulation.cpp", "w");
+void simulate(SymbolTable* symbolTable, TreeNode *root) {
+    FILE *simulationFile = fopen("simulation.cpp", "w");
     fprintf(simulationFile, "#include <iostream>\n#include <cmath>\n\n using namespace std;\n\nint main()\n{");
-    realSimulate(simulationFile, root);
+    realSimulate(simulationFile, symbolTable, root);
     fprintf(simulationFile, "return 0;\n}");
 }
 
 int main() {
     CompilerInfo *ci = new CompilerInfo("input.txt", "output.txt", "debug.txt");
-    // todo: linenum is not set in for every node in the parse tree
     // DONE as parser now handles the linenum correctly
     TreeNode *root = Parse(ci);
     PrintTree(root);
 
 
     // build symbol table here
-    // todo: fact is listed 5 times, should be 4, do linenum to check
     // DONE as parser now handles the linenum correctly
     auto *symbolTable = new SymbolTable();
     buildSymbolTable(symbolTable, root);
     symbolTable->Print();
 
     // preform type checking
-   TypeCheck(root);
-    simulate(root);
+    TypeCheck(root);
+
+    // code simulation
+    simulate(symbolTable, root);
     return 0;
 }

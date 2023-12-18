@@ -1,7 +1,7 @@
 cmake-build-debug/
 .idea/
 CMakeLists.txt
-.vscode/settings.json
+.vscode/
 parser.cpp
 scanner.cpp
 /output
