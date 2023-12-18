@@ -9,3 +9,5 @@ debug.txt
 output.txt
 input.txt
 simulation.cpp
+simulation.exe
+code_gen.exe
