@@ -1010,19 +1010,17 @@ void simulate(SymbolTable* symbolTable, TreeNode *root) {
 
 int main() {
     CompilerInfo *ci = new CompilerInfo("input.txt", "output.txt", "debug.txt");
-    // DONE as parser now handles the linenum correctly
+
     TreeNode *root = Parse(ci);
-    PrintTree(root);
 
-
-    // build symbol table here
-    // DONE as parser now handles the linenum correctly
+    // build symbol table and type check the using the tree
     auto *symbolTable = new SymbolTable();
     buildSymbolTable(symbolTable, root);
-    symbolTable->Print();
-
-    // preform type checking
     TypeCheck(root);
+
+    // print tree and the symbol table
+    PrintTree(root);
+    symbolTable->Print();
 
     // code simulation
     simulate(symbolTable, root);
