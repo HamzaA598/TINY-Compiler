@@ -768,10 +768,11 @@ struct SymbolTable {
         VariableInfo *vi = new VariableInfo;
         vi->head_line = vi->tail_line = lineloc;
         vi->next_var = 0;
-        vi->memloc = num_vars++;
+        vi->memloc = 0;
         AllocateAndCopy(&vi->name, name);
 
-        if (!prev) var_info[h] = vi;
+        if (!prev)
+            var_info[h] = vi;
         else prev->next_var = vi;
     }
 
@@ -826,6 +827,14 @@ void buildSymbolTable(SymbolTable *symbolTable, TreeNode *currentNode) {
     if (currentNode->node_kind == ID_NODE || currentNode->node_kind == ASSIGN_NODE ||
         currentNode->node_kind == READ_NODE) {
         symbolTable->Insert(currentNode->id, currentNode->line_num);
+    }
+
+    if(currentNode->node_kind == ASSIGN_NODE) {
+        VariableInfo* variableInfo = symbolTable->var_info[symbolTable->Hash(currentNode->id)];
+
+        // the first time that the variable appears
+        if(variableInfo->head_line->line_num == currentNode->line_num)
+            variableInfo->memloc = currentNode->child[0]->num;
     }
 
     // build children
@@ -889,18 +898,15 @@ void CheckNode(TreeNode *currentNode) {
     }
 }
 
-void handleIdDatatype(FILE* file, SymbolTable* symbolTable, TreeNode* currentNode)
-{
+void handleIdDatatype(FILE *file, SymbolTable *symbolTable, TreeNode *currentNode) {
     int firstLineAppearance = symbolTable->var_info[symbolTable->Hash(currentNode->id)]->head_line->line_num;
-    if(firstLineAppearance == currentNode->line_num)
+    if (firstLineAppearance == currentNode->line_num)
         fprintf(file, "int ");
 }
 
-void SimulateNode(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
+void SimulateNode(FILE *file, SymbolTable *symbolTable, TreeNode *currentNode) {
     if (currentNode == NULL)
         return;
-
-    printf("");
 
     switch (currentNode->node_kind) {
         case IF_NODE:
@@ -999,7 +1005,7 @@ void SimulateNode(FILE *file, SymbolTable* symbolTable, TreeNode *currentNode) {
         SimulateNode(file, symbolTable, currentNode->sibling);
 }
 
-void SimulateProgram(SymbolTable* symbolTable, TreeNode *root) {
+void SimulateProgram(SymbolTable *symbolTable, TreeNode *root) {
     FILE *simulationFile = fopen("simulation.cpp", "w");
     fprintf(simulationFile, "#include <iostream>\n#include <cmath>\n\n using namespace std;\n\nint main()\n{");
     SimulateNode(simulationFile, symbolTable, root);
