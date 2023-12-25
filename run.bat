@@ -13,4 +13,3 @@ if %errorlevel% equ 0 (
 )
 
 rem Pause to keep the command window open
-pause

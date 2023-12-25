@@ -927,9 +927,9 @@ void SimulateNode(FILE *file, SymbolTable *symbolTable, TreeNode *currentNode) {
              */
             fprintf(file, "do {\n");
             SimulateNode(file, symbolTable, currentNode->child[0]);
-            fprintf(file, "} while(");
+            fprintf(file, "} while(!(");
             SimulateNode(file, symbolTable, currentNode->child[1]);
-            fprintf(file, ");\n\n");
+            fprintf(file, "));\n\n");
             break;
         case ASSIGN_NODE: {
             handleIdDatatype(file, symbolTable, currentNode);
